@@ -39,9 +39,20 @@ class CombatService:
         log = []
         target = next((monster for monster in monsters if monster.current_hp > 0), None)
         if target:
-            damage = max(1, character.attack - target.defense)
-            target.current_hp = max(0, target.current_hp - damage)
-            log.append(f"{character.name} ataca a {target.name} causando {damage} de daño.")
+            # Implementar selección de acción (ataque básico o habilidad)
+            action = CombatService._select_action(character)
+            if action == "basic_attack":
+                damage = CombatService._calculate_damage(character.attack, target.defense)
+                target.current_hp = max(0, target.current_hp - damage)
+                log.append(f"{character.name} realiza un ataque básico a {target.name} causando {damage} de daño.")
+            else:  # Uso de habilidad
+                skill_damage, skill_effect = CombatService._use_skill(character, action)
+                damage = CombatService._calculate_damage(skill_damage, target.defense)
+                target.current_hp = max(0, target.current_hp - damage)
+                log.append(f"{character.name} usa {action} contra {target.name} causando {damage} de daño.")
+                if skill_effect:
+                    log.append(f"Efecto adicional: {skill_effect}")
+            
             if target.current_hp == 0:
                 log.append(f"{target.name} ha sido derrotado.")
         return log
@@ -53,10 +64,43 @@ class CombatService:
         """
         log = []
         if monster.current_hp > 0:
-            damage = max(1, monster.attack - character.defense)
+            damage = CombatService._calculate_damage(monster.attack, character.defense)
             character.current_hp = max(0, character.current_hp - damage)
             log.append(f"{monster.name} ataca a {character.name} causando {damage} de daño.")
         return log
+
+    @staticmethod
+    def _calculate_damage(attack: int, defense: int) -> int:
+        """
+        Calcula el daño basado en el ataque y la defensa.
+        """
+        base_damage = max(1, attack - defense)
+        variance = randint(-2, 2)  # Añade un poco de variabilidad al daño
+        return max(1, base_damage + variance)
+
+    @staticmethod
+    def _select_action(character: Character) -> str:
+        """
+        Selecciona una acción para el personaje (ataque básico o habilidad).
+        """
+        # Por ahora, simplemente retorna "basic_attack" o una habilidad aleatoria
+        if character.skills and randint(1, 4) == 1:  # 25% de probabilidad de usar una habilidad
+            return character.skills[randint(0, len(character.skills) - 1)]
+        return "basic_attack"
+
+    @staticmethod
+    def _use_skill(character: Character, skill_name: str) -> tuple:
+        """
+        Usa una habilidad del personaje.
+        """
+        # Aquí se implementaría la lógica de las habilidades
+        # Por ahora, retornamos valores de ejemplo
+        if skill_name == "fireball":
+            return (character.attack * 1.5, "El objetivo está quemado")
+        elif skill_name == "ice_shard":
+            return (character.attack * 1.2, "El objetivo está congelado")
+        else:
+            return (character.attack, None)
 
     @staticmethod
     def calculate_rewards(character: Character, defeated_monsters: List[Monster]):
