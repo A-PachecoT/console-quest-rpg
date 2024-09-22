@@ -25,6 +25,11 @@ Console Quest RPG es un juego de rol por turnos desarrollado como proyecto de so
 git tag -a v0.2.0 -m "v0.2.0 - Basic data models"
 ```
 
+### v0.3.0 - Servicios básicos e implementación de API
+- Implementación de servicios para Character y Dungeon
+- Creación de endpoints para la gestión de personajes y mazmorras
+- Actualización de la API para incluir nuevos servicios y endpoints
+- Ampliación de las pruebas unitarias para cubrir nuevos servicios y endpoints
 
 ## Guía de Desarrollo
 
@@ -54,7 +59,6 @@ git tag -a v0.2.0 -m "v0.2.0 - Basic data models"
    ```
 
 ### Estructura del Proyecto
-
 ```
 console-quest-rpg/
 ├── app/
@@ -66,8 +70,14 @@ console-quest-rpg/
 │ │ ├── monster.py
 │ │ └── item.py
 │ └── services/
+│ ├── init.py
+│ ├── character_service.py
+│ └── dungeon_service.py
 ├── tests/
-│ └── test_main.py
+│ ├── test_main.py
+│ ├── test_models.py
+│ ├── test_character_service.py
+│ └── test_dungeon_service.py
 ├── requirements.txt
 └── README.md
 ```
@@ -85,17 +95,22 @@ Para ejecutar las pruebas:
 ```
 pytest
 ```
+## API Endpoints
+
+- `GET /`: Mensaje de bienvenida
+- `GET /health`: Verificación de salud de la API
+- `GET /game-info`: Información del juego
+- `POST /characters`: Crear un nuevo personaje
+- `GET /characters/{character_id}`: Obtener información de un personaje
+- `PUT /characters/{character_id}`: Actualizar un personaje
+- `DELETE /characters/{character_id}`: Eliminar un personaje
+- `POST /characters/{character_id}/level-up`: Subir de nivel a un personaje
+- `POST /dungeon/generate`: Generar una nueva mazmorra
+- `POST /dungeon/move/{direction}`: Mover al jugador en la mazmorra
 
 ## Próximos Pasos
-- Implementar servicios básicos para Character, Monster e Item
-- Desarrollar la lógica de combate
+- Implementar la lógica de combate
 - Crear una interfaz de consola para interactuar con el juego
-- Implementar la lógica de inventario
-- Implementar la lógica de equipamiento
-- Implementar la lógica de consumibles
-- Implementar la lógica de experiencia y niveles
-- Implementar la lógica de críticos
-- Implementar la lógica de derrotas y victorias
-- Implementar la lógica de guardado y carga de partida
-- Implementar la lógica de personajes
-- Implementar la lógica de monstruos
+- Implementar la lógica de inventario y equipamiento
+- Añadir más tipos de monstruos y objetos
+- Implementar un sistema de guardado y carga de partidas
