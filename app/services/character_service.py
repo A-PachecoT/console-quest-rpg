@@ -1,4 +1,4 @@
-from app.models.character import Character
+from models.character import Character
 from typing import List, Optional
 
 class CharacterService:
