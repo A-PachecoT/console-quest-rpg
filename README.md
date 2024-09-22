@@ -31,6 +31,11 @@ git tag -a v0.2.0 -m "v0.2.0 - Basic data models"
 - Actualización de la API para incluir nuevos servicios y endpoints
 - Ampliación de las pruebas unitarias para cubrir nuevos servicios y endpoints
 
+### v0.3.1 - Character and Monster model updates
+- Updated Character and Monster models to include XP
+- Changed HP system to include current_hp and max_hp instead of a single hp field
+- Updated corresponding test files to reflect these changes
+
 ## Guía de Desarrollo
 
 ### Requisitos
@@ -125,3 +130,4 @@ pytest
 - Implementar la lógica de inventario y equipamiento
 - Añadir más tipos de monstruos y objetos
 - Implementar un sistema de guardado y carga de partidas
+- Refinar el sistema de XP y niveles
