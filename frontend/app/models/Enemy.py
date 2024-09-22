@@ -1,7 +1,6 @@
-import AbstractCharacter
-from pydantic import BaseModel, Field
+from .AbstractCharacter import AbstractCharacter
 
-class Enemy(AbstractCharacter, BaseModel):
+class Enemy(AbstractCharacter):
 	
 	def __init__(self, id, name, level, hp, maxHp) -> None:
 		super().__init__(id, name, level, hp, maxHp)
