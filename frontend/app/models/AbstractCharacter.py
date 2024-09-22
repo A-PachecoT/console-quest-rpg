@@ -8,14 +8,14 @@ class Stats(BaseModel):
 	vitality: int = Field(default=0, ge=0)
 
 class AbstractCharacter(ABC, BaseModel):
-	_name: str
+	name: str
 
-	_level: int = Field(default=1, ge=1)
+	level: int = Field(default=1, ge=1)
 
-	_hp: int = Field(default=100, ge=0)
-	_maxHp: int = Field(default=100, ge=0)
+	hp: int = Field(default=100, ge=0)
+	maxHp: int = Field(default=100, ge=0)
 
-	_stats: Stats = Stats()
+	stats: Stats = Stats()
 
 	def __init__(self, id, name, level, hp, maxHp) -> None:
 		super().__init__()
@@ -30,7 +30,7 @@ class AbstractCharacter(ABC, BaseModel):
 		self._hp = 0
 
 	@abstractmethod
-	def Attack(self, target: AbstractCharacter) -> None:
+	def Attack(self, target) -> None:
 		pass
 
 	def GetName(self) -> str:
