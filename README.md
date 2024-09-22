@@ -61,6 +61,9 @@ git tag -a v0.2.0 -m "v0.2.0 - Basic data models"
 ### Estructura del Proyecto
 ```
 console-quest-rpg/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── backend/
 │   ├── app/
 │   │   ├── main.py
