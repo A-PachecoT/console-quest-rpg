@@ -6,6 +6,7 @@ class Character(BaseModel):
     name: str
     level: int = Field(default=1, ge=1)
     max_hp: int = Field(default=100, ge=0)
+    current_hp: int = Field(default=100, ge=0)
     attack: int = Field(default=10, ge=1)
     defense: int = Field(default=5, ge=0)
     xp: int = Field(default=0, ge=0)
@@ -20,6 +21,7 @@ class Character(BaseModel):
                 "name": "Hero",
                 "level": 1,
                 "max_hp": 100,
+                "current_hp": 100,
                 "attack": 10,
                 "defense": 5,
                 "experience": 0,

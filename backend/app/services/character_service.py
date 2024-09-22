@@ -36,7 +36,7 @@ class CharacterService:
         if character:
             character.level += 1
             character.max_hp += 10
-            character.current_hp = character.max_hp
+            character.current_hp = character.max_hp # Reset current hp to max hp
             character.attack += 2
             character.defense += 1
             return character

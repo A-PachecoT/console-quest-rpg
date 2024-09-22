@@ -8,6 +8,7 @@ class Monster(BaseModel):
     attack: int = Field(default=5, ge=1)
     defense: int = Field(default=2, ge=0)
     xp_reward: int = Field(default=10, ge=0)
+    gold_reward: int = Field(default=5, ge=0)
 
     class Config:
         schema_extra = {
@@ -15,9 +16,9 @@ class Monster(BaseModel):
                 "id": 1,
                 "name": "Goblin",
                 "current_hp": 50,
-                "max_hp": 50,
                 "attack": 5,
                 "defense": 2,
-                "xp_reward": 10
+                "xp_reward": 10,
+                "gold_reward": 5
             }
         }
