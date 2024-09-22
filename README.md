@@ -61,26 +61,32 @@ git tag -a v0.2.0 -m "v0.2.0 - Basic data models"
 ### Estructura del Proyecto
 ```
 console-quest-rpg/
-├── app/
-│ ├── main.py
-│ ├── api/
-│ ├── models/
-│ │ ├── init.py
-│ │ ├── character.py
-│ │ ├── monster.py
-│ │ └── item.py
-│ └── services/
-│ ├── init.py
-│ ├── character_service.py
-│ └── dungeon_service.py
-├── tests/
-│ ├── test_main.py
-│ ├── test_models.py
-│ ├── test_character_service.py
-│ └── test_dungeon_service.py
-├── requirements.txt
+├── backend/
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── api/
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   ├── character.py
+│   │   │   ├── monster.py
+│   │   │   └── item.py
+│   │   └── services/
+│   │       ├── __init__.py
+│   │       ├── character_service.py
+│   │       └── dungeon_service.py
+│   ├── tests/
+│   │   ├── test_main.py
+│   │   ├── test_models.py
+│   │   ├── test_character_service.py
+│   │   └── test_dungeon_service.py
+│   └── requirements.txt
+├── frontend/  # Futura implementación
 └── README.md
 ```
+
+## Frontend (Próximamente)
+
+Se planea implementar un frontend para mejorar la experiencia de usuario del juego.
 
 ### Ejecutar la Aplicación
 Para ejecutar la aplicación en modo de desarrollo:
