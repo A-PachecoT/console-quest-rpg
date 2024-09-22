@@ -65,6 +65,7 @@ console-quest-rpg/
 │   └── workflows/
 │       └── ci.yml
 ├── backend/
+│   ├── run.py
 │   ├── app/
 │   │   ├── main.py
 │   │   ├── api/
@@ -95,7 +96,8 @@ Se planea implementar un frontend para mejorar la experiencia de usuario del jue
 Para ejecutar la aplicación en modo de desarrollo:
 
 ```
-uvicorn app.main:app --reload
+cd backend
+uvicorn run:app --reload
 ```
 
 ### Pruebas
