@@ -8,7 +8,6 @@ class Stats(BaseModel):
 	vitality: int = Field(default=0, ge=0)
 
 class AbstractCharacter(ABC, BaseModel):
-	_id: int
 	_name: str
 
 	_level: int = Field(default=1, ge=1)
@@ -30,8 +29,10 @@ class AbstractCharacter(ABC, BaseModel):
 	def Die(self) -> None:
 		self._hp = 0
 
-	def GetId(self) -> int:
-		return self._id
+	@abstractmethod
+	def Attack(self, target: AbstractCharacter) -> None:
+		pass
+
 	def GetName(self) -> str:
 		return self._name
 	def GetLevel(self) -> int:
