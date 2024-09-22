@@ -1,8 +1,8 @@
 from fastapi import FastAPI, HTTPException
-from app.models.character import Character
-from app.models.monster import Monster
-from app.services.character_service import CharacterService
-from app.services.dungeon_service import DungeonService
+from models.character import Character
+from models.monster import Monster
+from services.character_service import CharacterService
+from services.dungeon_service import DungeonService
 
 app = FastAPI()
 
