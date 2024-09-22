@@ -8,4 +8,4 @@ def Update():
 	globalInstance.GetView().Show()
 
 def Start():
-	globalInstance.ChangeView(MainMenuView)
+	globalInstance.SetView(MainMenuView)

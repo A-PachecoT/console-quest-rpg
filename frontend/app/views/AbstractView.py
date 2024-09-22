@@ -18,7 +18,7 @@ class AbstractView(ABC):
 	def Decision(posibilites: list) -> str:
 		while True:
 			try:
-				decision = int(input('\n\t\t'))
+				decision = input('\n\t\t')
 				if decision in posibilites:
 					return decision
 				else:

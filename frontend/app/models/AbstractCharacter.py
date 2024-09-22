@@ -1,33 +1,35 @@
 from abc import ABC, abstractmethod
-from pydantic import BaseModel, Field
 
-class Stats(BaseModel):
-	strength: int = Field(default=0, ge=0)
-	agility: int = Field(default=0, ge=0)
-	intelligence: int = Field(default=0, ge=0)
-	vitality: int = Field(default=0, ge=0)
+class Stats():
+	strength: int
+	agility: int
+	intelligence: int
+	vitality: int
+	
+	def __init__(self) -> None:
+		self.strength = 1
+		self.agility = 1
+		self.intelligence = 1
+		self.vitality = 1
 
-class AbstractCharacter(ABC, BaseModel):
+class AbstractCharacter(ABC):
 	name: str
 
-	level: int = Field(default=1, ge=1)
+	level: int
+	hp: int
+	maxHp: int
 
-	hp: int = Field(default=100, ge=0)
-	maxHp: int = Field(default=100, ge=0)
+	stats: Stats
 
-	stats: Stats = Stats()
-
-	def __init__(self, id, name, level, hp, maxHp) -> None:
-		super().__init__()
-		self._id = id
-		self._name = name
-		self._level = level
-		self._hp = hp
-		self._maxHp = maxHp
+	def __init__(self, name, level = 1, hp = 100, maxHp = 100) -> None:
+		self
+		self.level = level
+		self.hp = hp
+		self.maxHp = maxHp
 	
 	@abstractmethod
 	def Die(self) -> None:
-		self._hp = 0
+		self.hp = 0
 
 	@abstractmethod
 	def Attack(self, target) -> None:
