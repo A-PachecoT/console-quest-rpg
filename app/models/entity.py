@@ -13,6 +13,9 @@ class Entity(BaseModel):
     attack: int = Field(default=10, ge=1)
     defense: int = Field(default=5, ge=0)
 
+    def __init__(self, name: str):
+        self.name = name
+
     class Config:
         schema_extra = {
             "example": {
