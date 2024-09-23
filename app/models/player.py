@@ -8,6 +8,9 @@ class Player(Entity):
 
     current_enemy: Monster = Field(default = None)
 
+    def __init__(self, name: str):
+        super().__init__(name)
+
     class Config:
         allow_population_by_field_name = True
         json_schema_extra = {

@@ -4,6 +4,14 @@ from .entity import Entity
 class Monster(Entity):
     xp_reward: int = Field(default=10, ge=0)
 
+    def __init__(self, name: str, level: int):
+        super().__init__(name)
+        self.level = level;
+        self.GenerateRandomStats(self)
+    
+    def GenerateRandomStats(self):
+        pass
+
     class Config:
         schema_extra = {
             "example": {
