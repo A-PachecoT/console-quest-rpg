@@ -98,6 +98,7 @@ console-quest-rpg/
 │   │   ├── routes
 │   │   │   ├── endpoints
 │   │   │   │   ├── character_routes.py
+│   │   │   │   ├── combat_routes.py
 │   │   │   │   ├── dungeon_routes.py
 │   │   │   │   ├── general_routes.py
 │   │   │   │   └── player_routes.py
@@ -143,7 +144,6 @@ console-quest-rpg/
 └── README.md
 ```
 
-
 ### Pruebas
 Para ejecutar las pruebas:
 
@@ -168,7 +168,10 @@ pytest
 - `GET /players`: Obtener todos los jugadores
 - `PUT /players/{player_id}`: Actualizar un jugador
 - `DELETE /players/{player_id}`: Eliminar un jugador
-- `POST /combat/start`: Iniciar un combate entre un personaje y un monstruo
+- `POST /combat/start`: Iniciar un combate entre un personaje y uno o más monstruos
+- `POST /combat/character-turn`: Ejecutar el turno del personaje
+- `POST /combat/monster-turn`: Ejecutar el turno de los monstruos
+- `GET /combat/log/{combat_id}`: Obtener el registro del combate
 
 ## Base de Datos
 
