@@ -9,9 +9,19 @@ on:
 # Necesitamos hacer que trabaje con nuestros contenedores.
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install docker-compose
+    
+    - name: Build and run containers
+      run: |
+        docker compose -f compose.yml up -d --build
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
