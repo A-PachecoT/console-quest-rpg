@@ -1,8 +1,7 @@
 services:
   backend:
     container_name: backend
-    build:
-      context: ./backend  
+    build: .
     ports:
       - "8000:8000" 
     depends_on:
@@ -10,11 +9,6 @@ services:
     environment:
       MONGO_URL: mongodb://root:password@mongodb:27017/db_test?authSource=admin
       MONGO_DB_NAME: db_test
-
-  frontend:
-    container_name: frontend
-    build:
-      context: ./frontend 
 
   mongodb:
     container_name: mongodb
