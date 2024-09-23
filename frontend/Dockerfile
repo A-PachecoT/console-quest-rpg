@@ -8,4 +8,4 @@ WORKDIR /app
 
 COPY . .
 
-CMD ["python", "app/main.py"]
+# CMD ["python", "main.py"]
