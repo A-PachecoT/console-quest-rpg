@@ -5,6 +5,11 @@ from .services.character_service import CharacterService
 from .services.dungeon_service import DungeonService
 from .services.combat_service import CombatService
 from typing import List
+from .routes.endpoints.character_routes import router as character_router
+from .routes.endpoints.combat_routes import router as combat_router
+from .routes.endpoints.dungeon_routes import router as dungeon_router
+from .routes.endpoints.general_routes import router as general_router
+from .routes.endpoints.player_routes import router as player_router
 
 # Creamos una instancia de la aplicación FastAPI
 app = FastAPI(
@@ -25,9 +30,12 @@ async def startup_db_client():
 async def shutdown_db_client():
     MongoConnection.close_mongo_connection()
 
-
-# Incluimos el router de la aplicación con el prefijo "/api"
-app.include_router(router, prefix="/api")
+# Incluimos el router de la aplicación
+app.include_router(character_router, prefix="/characters")
+app.include_router(combat_router, prefix="/combat")
+app.include_router(dungeon_router, prefix="/dungeon")
+app.include_router(general_router, prefix="/")
+app.include_router(player_router, prefix="/players")
 
 @app.get("/characters/{character_id}", response_model=Character)
 async def get_character(character_id: int):

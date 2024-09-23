@@ -1,7 +1,7 @@
 import pytest
-from ..app.models.character import Character
-from ..app.models.monster import Monster
-from ..app.services.combat_service import CombatService
+from app.models.character import Character
+from app.models.monster import Monster
+from app.services.combat_service import CombatService
 
 @pytest.fixture
 def character():

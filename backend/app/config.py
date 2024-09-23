@@ -1,4 +1,9 @@
 from pydantic_settings import BaseSettings
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 class Settings(BaseSettings):
     """
@@ -13,6 +18,9 @@ class Settings(BaseSettings):
     """
     MONGO_URL: str
     MONGO_DB_NAME: str
+
+    class Config:
+        env_file = ".env"
 
 # Instancia de la clase Settings para acceder a la configuración
 settings = Settings()
