@@ -134,6 +134,8 @@ console-quest-rpg/
 │   │       └── NewPlayerView.py
 │   ├── Dockerfile
 │   └── main.py
+├── prometheus_data
+│   └── prometheus.yml
 └── README.md
 ```
 
@@ -165,3 +167,7 @@ pytest
 ## Base de Datos
 
 El proyecto utiliza MongoDB como base de datos. La conexión a MongoDB se realiza utilizando Motor, un controlador asíncrono para MongoDB.
+
+## Monitoreo
+
+El proyecto incluye monitoreo con Prometheus y Grafana. 
