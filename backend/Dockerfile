@@ -9,8 +9,16 @@ COPY requirements.txt .
 # Instalar dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
+
 # Copiar todo el contenido del directorio backend al contenedor
 COPY . .
+
+# Set environment variables for testing
+ENV MONGO_URL=mongodb://mongodb:27017
+ENV MONGO_DB_NAME=testdb
+
+# Ejecutar pytest
+RUN pytest
 
 # Comando para correr la aplicación FastAPI
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
