@@ -1,6 +1,6 @@
 import pytest
 from app.services.character_service import CharacterService
-from app.models.character import Character
+from app.models.entity import Character
 
 @pytest.fixture
 def character_service():

@@ -1,3 +1,2 @@
-from .character import Character
+from .entity import Entity
 from .monster import Monster
-from .item import Item, ItemType

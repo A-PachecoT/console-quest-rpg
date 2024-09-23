@@ -1,12 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
+from .entity import Entity
 
-class Monster(BaseModel):
-    id: int
-    name: str
-    current_hp: int = Field(default=50, ge=0)
-    max_hp: int = Field(default=50, ge=0)
-    attack: int = Field(default=5, ge=1)
-    defense: int = Field(default=2, ge=0)
+class Monster(Entity):
     xp_reward: int = Field(default=10, ge=0)
 
     class Config:

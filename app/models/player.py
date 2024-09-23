@@ -1,26 +1,25 @@
-from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import Field
+from .entity import Entity
+from .monster import Monster
 
-class Player(BaseModel):
-    id: Optional[str] = Field(default=None, alias="_id")
-    name: str
-    level: int = Field(default=1)
-    hp: int = Field(default=100)
-    max_hp: int = Field(default=100)
+class Player(Entity):
     exp: int = Field(default=0)
     target_exp: int = Field(default=10)
-    gold: int = Field(default=0)
+
+    current_enemy: Monster = Field(default = None)
 
     class Config:
         allow_population_by_field_name = True
         json_schema_extra = {
             "example": {
+                "id": 1,
                 "name": "Hero",
                 "level": 1,
-                "hp": 100,
+                "current_hp": 100,
                 "max_hp": 100,
+                "attack": 10,
+                "defense": 5,
                 "exp": 0,
                 "target_exp": 10,
-                "gold": 0
             }
         }
