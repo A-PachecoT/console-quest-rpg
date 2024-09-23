@@ -1,0 +1,32 @@
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ./backend  
+    ports:
+      - "8000:8000" 
+    depends_on:
+      - mongodb 
+    environment:
+      MONGO_URL: mongodb://root:password@mongodb:27017/db_test?authSource=admin
+      MONGO_DB_NAME: db_test
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend 
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:5.0
+    ports:
+      - "27017:27017" 
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: db_test
+
+volumes:
+  mongo-data:

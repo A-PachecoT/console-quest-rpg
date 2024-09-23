@@ -5,7 +5,7 @@ Console Quest RPG es un juego de rol por turnos desarrollado como proyecto de so
 
 ### Integrantes
 - Pacheco André - 20222189G
-- Pezo Sergio - 
+- Pezo Sergio - 20224087G
 - Torres Oscar - 
 
 ## Versiones
@@ -39,29 +39,33 @@ git tag -a v0.2.0 -m "v0.2.0 - Basic data models"
 ## Guía de Desarrollo
 
 ### Requisitos
-- Python 3.9+
-- FastAPI
-- Uvicorn
-- Pydantic
-- Pytest
 
-### Configuración del Entorno
+All you will need to run this project is [Docker](https://docs.docker.com).
+
+### Commands
 1. Clonar el repositorio:
-   ```
-   git clone https://github.com/A-PachecoT/console-quest-rpg.git
-   cd console-quest-rpg
-   ```
 
-2. Crear y activar un entorno virtual:
-   ```
-   python -m venv venv
-   source venv/bin/activate  # En Windows: venv\Scripts\activate
-   ```
+```
+git clone https://github.com/A-PachecoT/console-quest-rpg.git
 
-3. Instalar las dependencias:
-   ```
-   pip install -r requirements.txt
-   ```
+cd console-quest-rpg
+```
+
+2. Para ejecutar la aplicación, primero necesitaremos ejecutar nuestro `compose.yml`, pues necesitaremos de la imagen de [MongoDB](https://www.mongodb.com).
+
+```
+docker compose up --build -d
+```
+
+Una vez generado todos los contenedores, podemos ejecutar nuestro RPG con:
+
+```
+docker compose run -it frontend python main.py
+```
+
+Y listo, disfruta la experiencia.
+
+
 
 ### Estructura del Proyecto
 ```
@@ -69,41 +73,70 @@ console-quest-rpg/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml
-├── backend/
-│   ├── run.py
-│   ├── app/
-│   │   ├── main.py
-│   │   ├── api/
-│   │   ├── models/
-│   │   │   ├── __init__.py
-│   │   │   ├── character.py
-│   │   │   ├── monster.py
-│   │   │   └── item.py
-│   │   └── services/
-│   │       ├── __init__.py
-│   │       ├── character_service.py
-│   │       └── dungeon_service.py
-│   ├── tests/
-│   │   ├── test_main.py
-│   │   ├── test_models.py
-│   │   ├── test_character_service.py
-│   │   └── test_dungeon_service.py
-│   └── requirements.txt
-├── frontend/  # Futura implementación
+├── backend
+│   ├── app
+│   │   ├── config.py
+│   │   ├── database
+│   │   │   ├── __init__.py
+│   │   │   └── mongo
+│   │   │       ├── connection.py
+│   │   │       ├── _init_.py
+│   │   │       └── queries
+│   │   │           ├── __init__.py
+│   │   │           └── player.py
+│   │   ├── __init__.py
+│   │   ├── main.py
+│   │   ├── models
+│   │   │   ├── character.py
+│   │   │   ├── __init__.py
+│   │   │   ├── item.py
+│   │   │   ├── monster.py
+│   │   │   └── player.py
+│   │   ├── routes
+│   │   │   ├── endpoints
+│   │   │   │   ├── character_routes.py
+│   │   │   │   ├── dungeon_routes.py
+│   │   │   │   ├── general_routes.py
+│   │   │   │   └── player_routes.py
+│   │   │   └── __init__.py
+│   │   └── services
+│   │       ├── character_service.py
+│   │       ├── dungeon_service.py
+│   │       ├── __init__.py
+│   │       └── player_service.py
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── tests
+│       ├── conftest.py
+│       ├── test_character_service.py
+│       ├── test_dungeon_service.py
+│       ├── test_main.py
+│       └── test_models.py
+├── compose.yml
+├── frontend
+│   ├── app
+│   │   ├── app.py
+│   │   ├── controllers
+│   │   │   └── __init__.py
+│   │   ├── data.py
+│   │   ├── __init__.py
+│   │   ├── models
+│   │   │   ├── AbstractCharacter.py
+│   │   │   ├── Enemy.py
+│   │   │   ├── __init__.py
+│   │   │   └── Player.py
+│   │   └── views
+│   │       ├── AbstractView.py
+│   │       ├── CombatView.py
+│   │       ├── EnterDungeonView.py
+│   │       ├── __init__.py
+│   │       ├── MainMenuView.py
+│   │       └── NewPlayerView.py
+│   ├── Dockerfile
+│   └── main.py
 └── README.md
 ```
 
-## Frontend (Próximamente)
-
-Se planea implementar un frontend para mejorar la experiencia de usuario del juego.
-
-### Ejecutar la Aplicación
-Para ejecutar la aplicación en modo de desarrollo:
-
-```
-cd backend
-uvicorn run:app --reload
-```
 
 ### Pruebas
 Para ejecutar las pruebas:
@@ -123,11 +156,12 @@ pytest
 - `POST /characters/{character_id}/level-up`: Subir de nivel a un personaje
 - `POST /dungeon/generate`: Generar una nueva mazmorra
 - `POST /dungeon/move/{direction}`: Mover al jugador en la mazmorra
+- `POST /players`: Crear un nuevo jugador
+- `GET /players/{player_id}`: Obtener información de un jugador
+- `GET /players`: Obtener todos los jugadores
+- `PUT /players/{player_id}`: Actualizar un jugador
+- `DELETE /players/{player_id}`: Eliminar un jugador
 
-## Próximos Pasos
-- Implementar la lógica de combate
-- Crear una interfaz de consola para interactuar con el juego
-- Implementar la lógica de inventario y equipamiento
-- Añadir más tipos de monstruos y objetos
-- Implementar un sistema de guardado y carga de partidas
-- Refinar el sistema de XP y niveles
+## Base de Datos
+
+El proyecto utiliza MongoDB como base de datos. La conexión a MongoDB se realiza utilizando Motor, un controlador asíncrono para MongoDB.
