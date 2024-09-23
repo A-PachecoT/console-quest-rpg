@@ -36,6 +36,11 @@ git tag -a v0.2.0 -m "v0.2.0 - Basic data models"
 - Changed HP system to include current_hp and max_hp instead of a single hp field
 - Updated corresponding test files to reflect these changes
 
+### v0.4.0 - Sistema de combate
+- Implementación del sistema de combate por turnos
+- Creación de `combat_service.py` con la lógica de combate
+- Actualización de la API para incluir endpoints de combate
+
 ## Guía de Desarrollo
 
 ### Requisitos
@@ -64,8 +69,6 @@ docker compose run -it frontend python main.py
 ```
 
 Y listo, disfruta la experiencia.
-
-
 
 ### Estructura del Proyecto
 ```
@@ -101,6 +104,7 @@ console-quest-rpg/
 │   │   │   └── __init__.py
 │   │   └── services
 │   │       ├── character_service.py
+│   │       ├── combat_service.py
 │   │       ├── dungeon_service.py
 │   │       ├── __init__.py
 │   │       └── player_service.py
@@ -146,6 +150,7 @@ Para ejecutar las pruebas:
 ```
 pytest
 ```
+
 ## API Endpoints
 
 - `GET /`: Mensaje de bienvenida
@@ -163,6 +168,7 @@ pytest
 - `GET /players`: Obtener todos los jugadores
 - `PUT /players/{player_id}`: Actualizar un jugador
 - `DELETE /players/{player_id}`: Eliminar un jugador
+- `POST /combat/start`: Iniciar un combate entre un personaje y un monstruo
 
 ## Base de Datos
 
