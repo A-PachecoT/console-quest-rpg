@@ -15,7 +15,7 @@ class PlayerService:
         """
         self.player_queries = player_queries
 
-    async def create_player(self, player: Player) -> str:
+    async def create_player(self, name: str):
         """
         Crea un nuevo jugador.
 
@@ -25,6 +25,7 @@ class PlayerService:
         Returns:
             str: El ID del jugador creado.
         """
+        player = Player(name=name)
         return await self.player_queries.create_player(player)
 
     async def get_player(self, player_id: str) -> Player:

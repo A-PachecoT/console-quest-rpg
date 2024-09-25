@@ -1,5 +1,8 @@
 from bson import ObjectId
 from typing import List
+from pydantic import BaseModel
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from app.models.player import Player
 from pymongo.database import Database
 
@@ -16,7 +19,7 @@ class PlayerQueries:
 		"""
 		self.collection = db.players
 
-	async def create_player(self, name: str) -> str:
+	async def create_player(self, player: Player):
 		"""
 		Crea un nuevo jugador en la base de datos.
 
@@ -24,12 +27,23 @@ class PlayerQueries:
 			player (Player): Objeto Player con los datos del jugador a crear.
 
 		Returns:
-			str: ID del jugador creado.
+			JSONResponse: Respuesta JSON con un mensaje y los datos del jugador creado.
 		"""
-		newPlayer = Player(name=name)
-		player_dict = newPlayer.dict(exclude={"id"}, by_alias=True)
-		result = await self.collection.insert_one(player_dict)
-		return str("User created with id: " + result.inserted_id + "and  name: " + result.name)
+		try:
+			player_dict = player.model_dump()
+			result = await self.collection.insert_one(player_dict)
+			player_dict["_id"] = str(result.inserted_id)
+			
+			return JSONResponse(content=jsonable_encoder({
+				"message": "Player created successfully",
+				"player": player_dict
+			})) 
+		except Exception as e:
+			print(e)
+			return JSONResponse(content=jsonable_encoder({
+				"message": "An error occurred while creating the player"
+			}), status_code=500)
+
 
 	async def get_player(self, player_id: str) -> Player:
 		"""
@@ -44,7 +58,7 @@ class PlayerQueries:
 		player_data = await self.collection.find_one({"_id": ObjectId(player_id)})
 		if player_data:
 			player_data["_id"] = str(player_data["_id"])
-			return Player(**player_data)
+			return player_data
 		return None
 
 	async def get_all_players(self) -> List[Player]:
