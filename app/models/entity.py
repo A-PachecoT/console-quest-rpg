@@ -1,20 +1,15 @@
-from pydantic import BaseModel, Field
-from typing import List
+from pydantic import BaseModel
 
 class Entity(BaseModel):
-    id: int
     name: str
 
-    level: int = Field(default=1, ge=1)
+    level: int = 1
 
-    current_hp: int = Field(default=100, ge=0)
-    max_hp: int = Field(default=100, ge=0)
+    current_hp: int = 100
+    max_hp: int = 100
 
-    attack: int = Field(default=10, ge=1)
-    defense: int = Field(default=5, ge=0)
-
-    def __init__(self, name: str):
-        self.name = name
+    attack: int = 10
+    defense: int = 5
 
     class Config:
         schema_extra = {

@@ -1,15 +1,12 @@
-from pydantic import Field
 from .entity import Entity
 from .monster import Monster
+from typing import Optional
 
 class Player(Entity):
-    exp: int = Field(default=0)
-    target_exp: int = Field(default=10)
+    exp: int = 0
+    target_exp: int = 10
 
-    current_enemy: Monster = Field(default = None)
-
-    def __init__(self, name: str):
-        super().__init__(name)
+    current_enemy: Optional[Monster] = None
 
     class Config:
         allow_population_by_field_name = True
