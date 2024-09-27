@@ -15,7 +15,7 @@ class PlayerService:
         """
         self.player_queries = player_queries
 
-    async def create_player(self, name: str):
+    async def create_player(self, name: str) ->dict:
         """
         Crea un nuevo jugador.
 
@@ -25,29 +25,19 @@ class PlayerService:
         Returns:
             str: El ID del jugador creado.
         """
+        if await self.player_queries.get_player(name):
+            return {
+                "message": "Player already exists"
+            }
+
         player = Player(name=name)
         return await self.player_queries.create_player(player)
-
-    async def get_player(self, player_id: str) -> Player:
-        """
-        Obtiene un jugador por su ID.
-
-        Args:
-            player_id (str): El ID del jugador a obtener.
-
-        Returns:
-            Player: El jugador encontrado.
-        """
-        return await self.player_queries.get_player(player_id)
-
-    async def get_all_players(self) -> list[Player]:
-        """
-        Obtiene todos los jugadores.
-
-        Returns:
-            list[Player]: Lista de todos los jugadores.
-        """
+    
+    async def get_all_players(self) -> dict:
         return await self.player_queries.get_all_players()
+
+    async def get_player_get_by_name(self, player_name: str) -> dict:
+        return await self.player_queries.get_player_get_by_name(player_name)
 
     async def update_player(self, player_id: str, player: Player) -> bool:
         """

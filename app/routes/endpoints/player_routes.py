@@ -16,40 +16,34 @@ def get_player_service():
     player_queries = PlayerQueries(db)
     return PlayerService(player_queries)
 
-@router.get("/login/{name}", response_model=str)
+@router.get("/", response_model=dict)
+async def player_home():
+    return {
+        "message": "Welcome to the player home",
+        "actions": {
+            "create_player": "/player/create/{name}",
+            "get_all_players": "/player/all",
+            "get_player_by_name": "/player/getByName/{name}"
+        }
+    }
+
+@router.get("/create/{name}", response_model=dict)
 async def create_player(name: str, service: PlayerService = Depends(get_player_service)):
     
     player_id = await service.create_player(name)
     return player_id
 
-#@router.get("/players/{player_id}", response_model=Player)
-#async def get_player(player_id: str, service: PlayerService = Depends(get_player_service)):
-#    """
-#    Obtiene un jugador por su ID.
-#    Args:
-#        player_id (str): El ID del jugador a obtener.
-#        service (PlayerService): El servicio de jugadores.
-#    Retorna:
-#        Player: Los datos del jugador.
-#    Lanza:
-#        HTTPException: Si el jugador no se encuentra.
-#    """
-#    player = await service.get_player(player_id)
-#    if not player:
-#        raise HTTPException(status_code=404, detail="Jugador no encontrado")
-#    return player
-#
-#@router.get("/players", response_model=List[Player])
-#async def get_all_players(service: PlayerService = Depends(get_player_service)):
-#    """
-#    Obtiene todos los jugadores.
-#    Args:
-#        service (PlayerService): El servicio de jugadores.
-#    Retorna:
-#        List[Player]: Una lista con todos los jugadores.
-#    """
-#    return await service.get_all_players()
+@router.get("/all", response_model=dict)
+async def get_all_players(service: PlayerService = Depends(get_player_service)):
+    players = await service.get_all_players()
+    if len(players) == 0:
+        raise HTTPException(status_code=404, detail="No players found")
+    return players
 
+@router.get("/getByName/{name}", response_model=dict)
+async def get_player_by_name(name: str, service: PlayerService = Depends(get_player_service)):
+    player = await service.get_player_get_by_name(name)
+    return player
 #@router.put("/players/{player_id}", response_model=bool)
 #async def update_player(player_id: str, player: Player, service: PlayerService = Depends(get_player_service)):
 #    """
