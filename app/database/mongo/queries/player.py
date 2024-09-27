@@ -19,7 +19,7 @@ class PlayerQueries:
 		"""
 		self.collection = db.players
 
-	async def create_player(self, player: Player):
+	async def create_player(self, player: Player) -> dict:
 		"""
 		Crea un nuevo jugador en la base de datos.
 
@@ -27,41 +27,45 @@ class PlayerQueries:
 			player (Player): Objeto Player con los datos del jugador a crear.
 
 		Returns:
-			JSONResponse: Respuesta JSON con un mensaje y los datos del jugador creado.
+			dict: Mensaje de éxito o error y los datos del jugador
 		"""
 		try:
 			player_dict = player.model_dump()
 			result = await self.collection.insert_one(player_dict)
 			player_dict["_id"] = str(result.inserted_id)
 			
-			return JSONResponse(content=jsonable_encoder({
+			return {
 				"message": "Player created successfully",
 				"player": player_dict
-			})) 
+			}
 		except Exception as e:
 			print(e)
-			return JSONResponse(content=jsonable_encoder({
+			return {
 				"message": "An error occurred while creating the player"
-			}), status_code=500)
+			}
 
-
-	async def get_player(self, player_id: str) -> Player:
+	async def get_player_get_by_name(self, player_name: str) -> dict:
 		"""
 		Obtiene un jugador por su ID.
 
 		Args:
-			player_id (str): ID del jugador a buscar.
-
+			player_name (str): Nombre del jugador
 		Returns:
 			Player: Objeto Player con los datos del jugador encontrado, o None si no se encuentra.
 		"""
-		player_data = await self.collection.find_one({"_id": ObjectId(player_id)})
+		player_data = await self.collection.find_one({"name": player_name})
 		if player_data:
 			player_data["_id"] = str(player_data["_id"])
-			return player_data
-		return None
+			print(player_data)
+			return {
+				"message": "Player retrieved successfully",
+				"player": player_data
+			}
+		return {
+			"message": "Player not found"
+		}
 
-	async def get_all_players(self) -> List[Player]:
+	async def get_all_players(self) -> dict:
 		"""
 		Obtiene todos los jugadores.
 
@@ -73,7 +77,11 @@ class PlayerQueries:
 		async for player_data in cursor:
 			player_data["_id"] = str(player_data["_id"])
 			players.append(Player(**player_data))
-		return players
+		return {
+			"message": "Players retrieved successfully",
+			"players": players
+		}
+
 
 	async def update_player(self, player_id: str, player: Player) -> bool:
 		"""
