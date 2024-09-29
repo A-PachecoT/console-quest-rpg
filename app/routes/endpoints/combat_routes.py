@@ -16,15 +16,6 @@ def get_enemy_service():
     """
     return EnemyService()
 
-
-def get_enemy_service():
-    """
-    Retorna:
-            EnemyService: Una instancia del servicio de enemigos con sus dependencias inyectadas.
-    """
-    return EnemyService()
-
-
 @router.get("/", response_model=dict)
 async def combat_home(request: Request):
     user = getattr(request.state, "user", None)
