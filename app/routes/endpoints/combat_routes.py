@@ -2,9 +2,17 @@ import random
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import RedirectResponse
 from app.routes.endpoints.player_routes import get_player_service
+from app.services.enemy_service import EnemyService
 from app.services.player_service import PlayerService
 
 router = APIRouter(prefix="/combat")
+
+def get_enemy_service():
+	"""
+	Retorna:
+		EnemyService: Una instancia del servicio de enemigos con sus dependencias inyectadas.
+	"""
+	return EnemyService()
 
 @router.get("/", response_model=dict)
 async def combat_home(request: Request):
@@ -27,7 +35,9 @@ async def combat_home(request: Request):
 		return RedirectResponse(url="/")
 
 @router.get("/start", response_model=dict)
-async def start_combat(request: Request, playerService: PlayerService = Depends(get_player_service)):
+async def start_combat(request: Request, 
+					   playerService: PlayerService = Depends(get_player_service),
+					   enemyService: EnemyService = Depends(get_enemy_service)):
 	user = getattr(request.state, 'user', None)
 	if not user:
 		return RedirectResponse(url="/")
@@ -43,9 +53,12 @@ async def start_combat(request: Request, playerService: PlayerService = Depends(
 			"message": "Combat already started"
 		}
 	
-	#TODO: Create enemy for the current player
+	enemy = await enemyService.get_random_enemy(player["level"])
+	player["current_enemy"] = enemy
+	
 	return {
-		"message": f"Combat started for {user}"
+		"message": f"Combat started for {user}",
+		"enemy": enemy
 	}
 
 @router.get("/attack", response_model=dict)
@@ -63,7 +76,7 @@ async def attack(request: Request, playerService: PlayerService = Depends(get_pl
 	log = []
 
 	log.append(player.TakeTurn(player["current_enemy"], 1))
-	enemyAction = random.randint(0, 1)
+	enemyAction = random.randint(1, 2)
 	log.append(player["current_enemy"].TakeTurn(player, enemyAction))
 	
 	return {
@@ -82,7 +95,11 @@ async def defend(request: Request, playerService: PlayerService = Depends(get_pl
 			"message": "Player does not exist"
 		}
 	
-	#TODO: Implement defend logic
+	log = []
+
+	log.append(player.TakeTurn(player["current_enemy"], 2))
+	enemyAction = random.randint(1, 2)
+	log.append(player["current_enemy"].TakeTurn(player, enemyAction))
 	return {
 		"message": f"{user} defended"
 	}
