@@ -16,6 +16,7 @@ def get_enemy_service():
     """
     return EnemyService()
 
+
 @router.get("/", response_model=dict)
 async def combat_home(request: Request):
     user = getattr(request.state, "user", None)
