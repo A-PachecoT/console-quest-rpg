@@ -42,6 +42,7 @@ class CombatService:
         enemy_action = random.randint(1, 2)
         log.append(self._take_turn(player.current_enemy, player, enemy_action))
 
+        await self.player_service.update_player(player.id, player)
         return {"log": log}
 
     async def defend(self, player: Player) -> dict:
@@ -53,6 +54,7 @@ class CombatService:
         enemy_action = random.randint(1, 2)
         log.append(self._take_turn(player.current_enemy, player, enemy_action))
 
+        await self.player_service.update_player(player.id, player)
         return {"log": log}
 
     def _take_turn(self, entity, target, action: int):
@@ -84,4 +86,6 @@ class CombatService:
 
     async def use_ability(self, player: Player, ability_id: int) -> dict:
         # TODO: Implement ability logic
-        return {"message": f"{player.name} used ability {ability_id}"}
+        result = {"message": f"{player.name} used ability {ability_id}"}
+        await self.player_service.update_player(player.id, player)
+        return result
