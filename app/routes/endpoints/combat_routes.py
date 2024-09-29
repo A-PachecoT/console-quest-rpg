@@ -57,23 +57,31 @@ async def start_combat(request: Request,
 	if not user:
 		return RedirectResponse(url="/")
 	
-	player = await playerService.get_player_by_name(user)
+	response = await playerService.get_player_by_name(user)
+	player = Player.model_validate(response["player"])
+	
 	if not player:
 		return {
 			"message": "Player does not exist"
 		}
-	
-	if player["current_enemy"]:
+	print(player.current_enemy)
+	if player.current_enemy is not None:
 		return {
 			"message": "Combat already started"
 		}
 	
-	enemy = await enemyService.get_random_enemy(player["level"])
-	player["current_enemy"] = enemy
-	
+	enemy = enemyService.GenerateEnemy(player.level)
+	player.current_enemy = enemy
+
+	response = await playerService.update_player(response["player"]["_id"], player)
+	if response:
+		return {
+			"message": f"Combat started for {user}",
+			"enemy": enemy
+		}
+
 	return {
-		"message": f"Combat started for {user}",
-		"enemy": enemy
+		"message": "An error occurred while starting the combat"
 	}
 
 @router.get("/attack", response_model=dict)
@@ -82,17 +90,23 @@ async def attack(request: Request, playerService: PlayerService = Depends(get_pl
 	if not user:
 		return RedirectResponse(url="/")
 	
-	player = await playerService.get_player_by_name(user)
+	response = await playerService.get_player_by_name(user)
+	player = Player.model_validate(response["player"])
 	if not player:
 		return {
 			"message": "Player does not exist"
 		}
+
+	if not player.current_enemy:
+		return {
+			"message": "player not in combat"
+		}
 	
 	log = []
 
-	log.append(player.TakeTurn(player["current_enemy"], 1))
+	log.append(player.TakeTurn(player.current_enemy, 1))
 	enemyAction = random.randint(1, 2)
-	log.append(player["current_enemy"].TakeTurn(player, enemyAction))
+	log.append(player.current_enemy.TakeTurn(player, enemyAction))
 	
 	return {
 		"log": log
@@ -104,17 +118,24 @@ async def defend(request: Request, playerService: PlayerService = Depends(get_pl
 	if not user:
 		return RedirectResponse(url="/")
 	
-	player = await playerService.get_player_by_name(user)
+	response = await playerService.get_player_by_name(user)
+	player = Player.model_validate(response["player"])
+	
 	if not player:
 		return {
 			"message": "Player does not exist"
 		}
 	
+	if not player.current_enemy:
+		return {
+			"message": "player not in combat"
+		}
+	
 	log = []
 
-	log.append(player.TakeTurn(player["current_enemy"], 2))
+	log.append(player.TakeTurn(player.current_enemy, 2))
 	enemyAction = random.randint(1, 2)
-	log.append(player["current_enemy"].TakeTurn(player, enemyAction))
+	log.append(player.current_enemy.TakeTurn(player, enemyAction))
 	return {
 		"message": f"{user} defended"
 	}
@@ -125,7 +146,8 @@ async def ability_menu(request: Request, playerService: PlayerService = Depends(
 	if not user:
 		return RedirectResponse(url="/")
 	
-	player = await playerService.get_player_by_name(user)
+	response = await playerService.get_player_by_name(user)
+	player = Player.model_validate(response["player"])
 	if not player:
 		return {
 			"message": "Player does not exist"
@@ -145,7 +167,8 @@ async def use_ability(request: Request, ability_id: int, playerService: PlayerSe
 	if not user:
 		return RedirectResponse(url="/")
 	
-	player = await playerService.get_player_by_name(user)
+	response = await playerService.get_player_by_name(user)
+	player = Player.model_validate(response["player"])
 	if not player:
 		return {
 			"message": "Player does not exist"
