@@ -5,6 +5,7 @@ from app.models.player import Player
 from app.services.combat_service import CombatService
 from app.services.player_service import PlayerService
 from app.services.enemy_service import EnemyService
+from app.services.turn_service import TurnService
 
 router = APIRouter(prefix="/combat")
 
@@ -29,8 +30,9 @@ COMBAT_ACTIONS = {
 def get_combat_service(
     player_service: PlayerService = Depends(PlayerService.get_player_service),
     enemy_service: EnemyService = Depends(),
+    turn_service: TurnService = Depends(),
 ):
-    return CombatService(player_service, enemy_service)
+    return CombatService(player_service, enemy_service, turn_service)
 
 
 @router.get("/", response_model=dict)
