@@ -2,20 +2,13 @@ from app.models.player import Player
 from app.models.monster import Monster
 from app.services.enemy_service import EnemyService
 from app.services.player_service import PlayerService
-from app.services.turn_service import TurnService
 import random
 
 
 class CombatService:
-    def __init__(
-        self,
-        player_service: PlayerService,
-        enemy_service: EnemyService,
-        turn_service: TurnService,
-    ):
+    def __init__(self, player_service: PlayerService, enemy_service: EnemyService):
         self.player_service = player_service
         self.enemy_service = enemy_service
-        self.turn_service = turn_service
 
     async def start_combat(self, player: Player) -> dict:
         if player.current_enemy is not None:
@@ -45,11 +38,9 @@ class CombatService:
             return {"message": "Player not in combat"}
 
         log = []
-        log.append(self.turn_service.take_turn(player, player.current_enemy, 1))
+        log.append(self._take_turn(player, player.current_enemy, 1))
         enemy_action = random.randint(1, 2)
-        log.append(
-            self.turn_service.take_turn(player.current_enemy, player, enemy_action)
-        )
+        log.append(self._take_turn(player.current_enemy, player, enemy_action))
 
         return {"log": log}
 
@@ -58,13 +49,30 @@ class CombatService:
             return {"message": "Player not in combat"}
 
         log = []
-        log.append(self.turn_service.take_turn(player, player.current_enemy, 2))
+        log.append(self._take_turn(player, player.current_enemy, 2))
         enemy_action = random.randint(1, 2)
-        log.append(
-            self.turn_service.take_turn(player.current_enemy, player, enemy_action)
-        )
+        log.append(self._take_turn(player.current_enemy, player, enemy_action))
 
         return {"log": log}
+
+    def _take_turn(self, entity, target, action: int):
+        if action == 1:
+            return self._attack(entity, target)
+        if action == 2:
+            return self._defend(entity)
+        return "Invalid action"
+
+    def _attack(self, attacker, target):
+        damage_mitigation = (target.defense) / (target.defense + 5)
+        extra_mitigation = 0.3 if target.is_defendig else 0
+        damage = attacker.attack * (1 - damage_mitigation) * (1 - extra_mitigation)
+        target.current_hp -= damage
+        target.is_defendig = False
+        return f"{attacker.name} attacked {target.name} for {damage} damage"
+
+    def _defend(self, entity):
+        entity.is_defendig = True
+        return f"{entity.name} is defending"
 
     async def get_ability_menu(self, player: Player) -> dict:
         ability_list = player.abilities
