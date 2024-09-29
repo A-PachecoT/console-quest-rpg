@@ -19,11 +19,11 @@ class Entity(BaseModel):
 		damage = self.attack * (1-damageMitigation) * (1-extraMitigation);
 		target.current_hp -= damage;
 		target.is_defendig = False
-		return "{self.name} attacked {target.name} for {damage} damage"
+		return f"{self.name} attacked {target.name} for {damage} damage"
 	
 	def Defend(self):
 		self.is_defendig = True
-		return "{self.name} is defending"
+		return f"{self.name} is defending"
 
 	def TakeTurn(self, target, action:int):
 		if action == 1:
