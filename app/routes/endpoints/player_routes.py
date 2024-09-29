@@ -7,6 +7,7 @@ from app.database.mongo.connection import get_database
 
 router = APIRouter(prefix="/player")
 
+
 def get_player_service():
     """
     Retorna:
@@ -16,19 +17,17 @@ def get_player_service():
     player_queries = PlayerQueries(db)
     return PlayerService(player_queries)
 
+
 @router.get("/", response_model=dict)
 async def player_home():
     return {
         "message": "Welcome to the player home",
-        "actions": {
-            "register": "/register",
-            "login": "/login"
-        }
+        "actions": {"register": "/register", "login": "/login"},
     }
 
 
-#@router.put("/players/{player_id}", response_model=bool)
-#async def update_player(player_id: str, player: Player, service: PlayerService = Depends(get_player_service)):
+# @router.put("/players/{player_id}", response_model=bool)
+# async def update_player(player_id: str, player: Player, service: PlayerService = Depends(get_player_service)):
 #    """
 #    Actualiza los datos de un jugador.
 #    Args:
@@ -45,8 +44,8 @@ async def player_home():
 #        raise HTTPException(status_code=404, detail="Jugador no encontrado")
 #    return True
 
-#@router.delete("/players/{player_id}", response_model=bool)
-#async def delete_player(player_id: str, service: PlayerService = Depends(get_player_service)):
+# @router.delete("/players/{player_id}", response_model=bool)
+# async def delete_player(player_id: str, service: PlayerService = Depends(get_player_service)):
 #    """
 #    Elimina un jugador.
 #    Args:
@@ -62,9 +61,11 @@ async def player_home():
 #        raise HTTPException(status_code=404, detail="Jugador no encontrado")
 #    return True
 
+
 @router.get("/all")
 async def get_all_players(service: PlayerService = Depends(get_player_service)):
     return await service.get_all_players()
 
-def error_ocurred(name_error:str):
+
+def error_ocurred(name_error: str):
     return "An error ocurred in player " + name_error

@@ -6,6 +6,7 @@ from app.config import settings
 MONGO_URL = settings.MONGO_URL
 MONGO_DB_NAME = settings.MONGO_DB_NAME
 
+
 class MongoConnection:
     """
     Clase Singleton para manejar la conexión a MongoDB.
@@ -20,7 +21,7 @@ class MongoConnection:
             cls._instance = super(MongoConnection, cls).__new__(cls)
             if MONGO_URL and MONGO_DB_NAME:
                 cls.connect_to_mongo(MONGO_URL, MONGO_DB_NAME)
-                
+
         return cls._instance
 
     @classmethod
@@ -43,7 +44,7 @@ class MongoConnection:
             try:
                 cls.client = AsyncIOMotorClient(mongo_url)
                 # Verificar la conexión
-                cls.client.admin.command('ismaster')
+                cls.client.admin.command("ismaster")
                 cls.db = cls.client[db_name]
             except ConnectionFailure:
                 cls.client = None
@@ -62,7 +63,9 @@ class MongoConnection:
             RuntimeError: Si la conexión no ha sido establecida.
         """
         if cls.db is None:
-            raise RuntimeError("Database connection not established. Call connect_to_mongo first.")
+            raise RuntimeError(
+                "Database connection not established. Call connect_to_mongo first."
+            )
         return cls.db
 
     @classmethod
@@ -86,10 +89,11 @@ class MongoConnection:
         if cls.client is None:
             return False
         try:
-            cls.client.admin.command('ismaster')
+            cls.client.admin.command("ismaster")
             return True
         except ConnectionFailure:
             return False
+
 
 def get_database() -> Database:
     """

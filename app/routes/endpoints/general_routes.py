@@ -11,6 +11,7 @@ templates = Jinja2Templates(directory="app/views")
 
 router = APIRouter()
 
+
 def get_player_service():
     """
     Retorna:
@@ -20,9 +21,11 @@ def get_player_service():
     player_queries = PlayerQueries(db)
     return PlayerService(player_queries)
 
+
 class Login(BaseModel):
     username: str
     password: str
+
 
 """"
 @router.middleware("http")
@@ -36,19 +39,20 @@ async def token_middleware(request: Request, call_next):
             request.state.user = None
 """
 
+
 @router.get("/")
 async def root(request: Request):
-    user = getattr(request.state, 'user', None)
+    user = getattr(request.state, "user", None)
     if user:
         welcome_message = f"Welcome {request.state.user} to the RPG Game API! This is a Software Development Project for the course CC3S2 from the National University of Engineering."
         return {
             "message": f"{welcome_message}",
             "options": {
                 "message": "Start a combat",
-                    "combat": "/combat",    
-                },
-                "logout": "/logout"
-            }
+                "combat": "/combat",
+            },
+            "logout": "/logout",
+        }
     else:
         welcome_message = "Welcome to the RPG Game API! This is a Software Development Project for the course CC3S2 from the National University of Engineering."
         return {
@@ -56,20 +60,25 @@ async def root(request: Request):
             "options": {
                 "message": "To start, register if you don't have an account or login if you do.",
                 "register": "/register",
-                "login": "/login"
-            }
+                "login": "/login",
+            },
         }
+
 
 @router.get("/login")
 async def render_login(request: Request, response: HTMLResponse):
-   user = getattr(request.state, 'user', None)
-   if user:
-       return RedirectResponse(url="/")
-   return templates.TemplateResponse("login.html", {"request": request})
+    user = getattr(request.state, "user", None)
+    if user:
+        return RedirectResponse(url="/")
+    return templates.TemplateResponse("login.html", {"request": request})
 
 
 @router.post("/login")
-async def login(login: Login, response: Response, player_service: PlayerService = Depends(get_player_service)):
+async def login(
+    login: Login,
+    response: Response,
+    player_service: PlayerService = Depends(get_player_service),
+):
     login = login.dict()
     username = login["username"]
     password = login["password"]
@@ -83,19 +92,22 @@ async def login(login: Login, response: Response, player_service: PlayerService 
         return response
     except Exception as e:
         return {"message": f"Login failed: {str(e)}"}
-    
 
 
 @router.get("/register")
 async def render_register(request: Request):
-    user = getattr(request.state, 'user', None)
+    user = getattr(request.state, "user", None)
     if user:
         return RedirectResponse(url="/")
     return templates.TemplateResponse("register.html", {"request": request})
 
 
 @router.post("/register")
-async def register(login: Login, response: Response, player_service: PlayerService = Depends(get_player_service)):
+async def register(
+    login: Login,
+    response: Response,
+    player_service: PlayerService = Depends(get_player_service),
+):
     login = login.dict()
     username = login["username"]
     password = login["password"]
@@ -109,26 +121,25 @@ async def register(login: Login, response: Response, player_service: PlayerServi
         return response
     except Exception as e:
         return JSONResponse(
-            status_code=400,
-            content={"message": f"Registration failed: {str(e)}"}
+            status_code=400, content={"message": f"Registration failed: {str(e)}"}
         )
+
 
 @router.get("/logout")
 async def logout(response: Response):
     response.delete_cookie(key="access_token")
-    return {
-        "message": "Logout successful go to home",
-        "home": "/"       
-    }
+    return {"message": "Logout successful go to home", "home": "/"}
+
 
 @router.get("/health")
 async def health_check():
     return {"status": "healthy"}
+
 
 @router.get("/game-info")
 async def game_info():
     return {
         "name": "RPG Game",
         "version": "0.3.0",
-        "description": "A turn-based RPG game with FastAPI backend"
+        "description": "A turn-based RPG game with FastAPI backend",
     }

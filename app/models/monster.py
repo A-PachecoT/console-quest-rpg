@@ -1,9 +1,9 @@
 from pydantic import Field
 from .entity import Entity
 
+
 class Monster(Entity):
     xp_reward: int = Field(default=4, ge=0)
-    
 
     def GenerateRandomStats(self):
         pass
@@ -17,6 +17,6 @@ class Monster(Entity):
                 "max_hp": 50,
                 "attack": 5,
                 "defense": 2,
-                "xp_reward": 10
+                "xp_reward": 10,
             }
         }
