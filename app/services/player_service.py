@@ -96,7 +96,7 @@ class PlayerService:
     async def get_all_players(self) -> dict:
         return await self.player_queries.get_all_players()
 
-    async def get_player_get_by_name(self, player_name: str) -> dict:
+    async def get_player_by_name(self, player_name: str) -> dict:
         return await self.player_queries.get_player_get_by_name(player_name)
 
     async def update_player(self, player_id: str, player: Player) -> bool:
