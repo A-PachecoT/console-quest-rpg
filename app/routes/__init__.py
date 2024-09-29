@@ -9,6 +9,3 @@ router = APIRouter()
 router.include_router(general_routes)
 router.include_router(player_routes)
 router.include_router(combat_routes)
-
-
-

@@ -11,8 +11,9 @@ import jwt
 app = FastAPI(
     title="Console Quest API",
     description="This is the API for the Console Quest project",
-    version="1.0.0"
+    version="1.0.0",
 )
+
 
 @app.middleware("http")
 async def token_middleware(request: Request, call_next):
@@ -29,9 +30,11 @@ async def token_middleware(request: Request, call_next):
 # Mount the static files directory
 app.mount("/static", StaticFiles(directory="app/views"), name="static")
 
+
 @app.on_event("startup")
 async def startup_db_client():
     MongoConnection.connect_to_mongo(settings.MONGO_URL, settings.MONGO_DB_NAME)
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

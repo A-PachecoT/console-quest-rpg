@@ -2,6 +2,7 @@ from .entity import Entity
 from .monster import Monster
 from typing import Optional
 
+
 class Player(Entity):
     exp: int = 0
     target_exp: int = 10

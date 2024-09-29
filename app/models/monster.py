@@ -2,6 +2,7 @@ import random
 from pydantic import Field
 from .entity import Entity
 
+
 class Monster(Entity):
 	xp_reward: int = Field(default=4, ge=0)
 	
