@@ -8,6 +8,23 @@ from app.services.enemy_service import EnemyService
 
 router = APIRouter(prefix="/combat")
 
+COMBAT_ACTIONS = {
+    "create a combat": ["/combat/start", "This is for starting a combat"],
+    "take a turn": {
+        "attack": ["/combat/attack", "This is for attacking the enemy"],
+        "defend": [
+            "/combat/defend",
+            "This is for defending from the enemy",
+        ],
+        "ability": [
+            "/combat/ability",
+            "This is the menu for using abilities",
+        ],
+        # "heal": "/combat/heal: this is for healing your character"
+    },
+    "home": ["/", "Return to the home page"],
+}
+
 
 def get_combat_service(
     player_service: PlayerService = Depends(PlayerService.get_player_service),
@@ -22,22 +39,7 @@ async def combat_home(request: Request):
     if user:
         return {
             "message": "Welcome to the combat home",
-            "actions": {
-                "create a combat": ["/combat/start", "This is for starting a combat"],
-                "take a turn": {
-                    "attack": ["/combat/attack", "This is for attacking the enemy"],
-                    "defend": [
-                        "/combat/defend",
-                        "This is for defending from the enemy",
-                    ],
-                    "ability": [
-                        "/combat/ability",
-                        "This is the menu for using abilities",
-                    ],
-                    # "heal": "/combat/heal: this is for healing your character"
-                },
-                "home": ["/", "Return to the home page"],
-            },
+            "actions": COMBAT_ACTIONS,
         }
     else:
         return RedirectResponse(url="/")
@@ -77,7 +79,10 @@ async def attack(
     if not player:
         return {"message": "Player does not exist"}
 
-    return await combat_service.attack(player)
+    attack_result = await combat_service.attack(player)
+    status = await combat_service.combat_status(player, COMBAT_ACTIONS)
+
+    return {**attack_result, **status}
 
 
 @router.get("/defend", response_model=dict)
@@ -96,7 +101,10 @@ async def defend(
     if not player:
         return {"message": "Player does not exist"}
 
-    return await combat_service.defend(player)
+    defend_result = await combat_service.defend(player)
+    status = await combat_service.combat_status(player, COMBAT_ACTIONS)
+
+    return {**defend_result, **status}
 
 
 @router.get("/ability", response_model=dict)

@@ -22,6 +22,17 @@ class CombatService:
             return {"message": f"Combat started for {player.name}", "enemy": enemy}
         return {"message": "An error occurred while starting the combat"}
 
+    async def combat_status(self, player: Player, combat_actions: dict) -> dict:
+        if not player.current_enemy:
+            return {"message": "Player not in combat"}
+
+        status = {
+            f"{player.name} health": player.current_hp,
+            f"{player.current_enemy.name} health": player.current_enemy.current_hp,
+        }
+
+        return {"status": status, "actions": combat_actions.get("take a turn", {})}
+
     async def attack(self, player: Player) -> dict:
         if not player.current_enemy:
             return {"message": "Player not in combat"}
