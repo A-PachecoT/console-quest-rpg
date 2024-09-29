@@ -4,6 +4,7 @@ import jwt
 import bcrypt
 import datetime
 from app.config import settings
+from app.database.mongo.connection import get_database
 
 JWT_SECRET_KEY = settings.JWT_SECRET_KEY
 SALT_ROUNDS = settings.SALT_ROUNDS
@@ -22,6 +23,15 @@ class PlayerService:
             player_queries (PlayerQueries): Instancia de las consultas de jugadores.
         """
         self.player_queries = player_queries
+
+    def get_player_service():
+        """
+        Retorna:
+            PlayerService: Una instancia del servicio de jugadores con sus dependencias inyectadas.
+        """
+        db = get_database()
+        player_queries = PlayerQueries(db)
+        return PlayerService(player_queries)
 
     async def register(self, name: str, password: str) -> dict:
         """

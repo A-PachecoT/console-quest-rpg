@@ -12,16 +12,6 @@ templates = Jinja2Templates(directory="app/views")
 router = APIRouter()
 
 
-def get_player_service():
-    """
-    Retorna:
-        PlayerService: Una instancia del servicio de jugadores con sus dependencias inyectadas.
-    """
-    db = get_database()
-    player_queries = PlayerQueries(db)
-    return PlayerService(player_queries)
-
-
 class Login(BaseModel):
     username: str
     password: str
@@ -77,7 +67,7 @@ async def render_login(request: Request, response: HTMLResponse):
 async def login(
     login: Login,
     response: Response,
-    player_service: PlayerService = Depends(get_player_service),
+    player_service: PlayerService = Depends(PlayerService.get_player_service),
 ):
     login = login.dict()
     username = login["username"]
@@ -106,7 +96,7 @@ async def render_register(request: Request):
 async def register(
     login: Login,
     response: Response,
-    player_service: PlayerService = Depends(get_player_service),
+    player_service: PlayerService = Depends(PlayerService.get_player_service),
 ):
     login = login.dict()
     username = login["username"]

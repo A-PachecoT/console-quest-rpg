@@ -8,16 +8,6 @@ from app.database.mongo.connection import get_database
 router = APIRouter(prefix="/player")
 
 
-def get_player_service():
-    """
-    Retorna:
-        PlayerService: Una instancia del servicio de jugadores con sus dependencias inyectadas.
-    """
-    db = get_database()
-    player_queries = PlayerQueries(db)
-    return PlayerService(player_queries)
-
-
 @router.get("/", response_model=dict)
 async def player_home():
     return {
@@ -63,7 +53,9 @@ async def player_home():
 
 
 @router.get("/all")
-async def get_all_players(service: PlayerService = Depends(get_player_service)):
+async def get_all_players(
+    service: PlayerService = Depends(PlayerService.get_player_service),
+):
     return await service.get_all_players()
 
 
