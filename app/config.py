@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     """
     MONGO_URL: str
     MONGO_DB_NAME: str
-
+    SALT_ROUNDS: int = 10
+    JWT_SECRET_KEY: str = "secret-4235324-56-346-456-43-56-34-57"
 # Instancia de la clase Settings para acceder a la configuración
 settings = Settings()

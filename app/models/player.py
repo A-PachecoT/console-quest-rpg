@@ -5,6 +5,7 @@ from typing import Optional
 class Player(Entity):
     exp: int = 0
     target_exp: int = 10
+    password: str
 
     current_enemy: Optional[Monster] = None
 
@@ -14,6 +15,7 @@ class Player(Entity):
             "example": {
                 "id": 1,
                 "name": "Hero",
+                "password": "123456",
                 "level": 1,
                 "current_hp": 100,
                 "max_hp": 100,

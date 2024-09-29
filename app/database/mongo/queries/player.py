@@ -5,6 +5,10 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from app.models.player import Player
 from pymongo.database import Database
+import bcrypt
+from app.config import settings
+
+SALT_ROUNDS = settings.SALT_ROUNDS
 
 class PlayerQueries:
 	"""
@@ -19,7 +23,7 @@ class PlayerQueries:
 		"""
 		self.collection = db.players
 
-	async def create_player(self, player: Player) -> dict:
+	async def register(self, player: Player) -> dict:
 		"""
 		Crea un nuevo jugador en la base de datos.
 
@@ -31,18 +35,17 @@ class PlayerQueries:
 		"""
 		try:
 			player_dict = player.model_dump()
+			hashed_password = bcrypt.hashpw(player_dict["password"].encode('utf-8'), bcrypt.gensalt(rounds=SALT_ROUNDS))
+			player_dict["password"] = hashed_password.decode('utf-8')
 			result = await self.collection.insert_one(player_dict)
 			player_dict["_id"] = str(result.inserted_id)
-			
+
 			return {
 				"message": "Player created successfully",
-				"player": player_dict
+				"player": player_dict["name"]
 			}
 		except Exception as e:
-			print(e)
-			return {
-				"message": "An error occurred while creating the player"
-			}
+			raise Exception(f"An error occurred while creating the player {e}")
 
 	async def get_player_get_by_name(self, player_name: str) -> dict:
 		"""
@@ -56,7 +59,7 @@ class PlayerQueries:
 		player_data = await self.collection.find_one({"name": player_name})
 		if player_data:
 			player_data["_id"] = str(player_data["_id"])
-			print(player_data)
+			
 			return {
 				"message": "Player retrieved successfully",
 				"player": player_data
@@ -113,3 +116,16 @@ class PlayerQueries:
 		"""
 		result = await self.collection.delete_one({"_id": ObjectId(player_id)})
 		return result.deleted_count > 0
+	
+	async def it_exists(self, player_name: str) -> bool:
+		"""
+		Verifica si un jugador existe por su nombre.
+
+		Args:
+			player_name (str): Nombre del jugador.
+
+		Returns:
+			bool: True si existe, False en caso contrario.
+		"""
+		player = await self.collection.find_one({"name": player_name})
+		return player is not None

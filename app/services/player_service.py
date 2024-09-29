@@ -1,5 +1,12 @@
 from app.models.player import Player
 from app.database.mongo.queries.player import PlayerQueries
+import jwt
+import bcrypt
+import datetime
+from app.config import settings
+
+JWT_SECRET_KEY = settings.JWT_SECRET_KEY
+SALT_ROUNDS = settings.SALT_ROUNDS
 
 class PlayerService:
     """
@@ -15,7 +22,7 @@ class PlayerService:
         """
         self.player_queries = player_queries
 
-    async def create_player(self, name: str) ->dict:
+    async def register(self, name: str, password: str) ->dict:
         """
         Crea un nuevo jugador.
 
@@ -25,14 +32,67 @@ class PlayerService:
         Returns:
             str: El ID del jugador creado.
         """
-        if await self.player_queries.get_player(name):
-            return {
-                "message": "Player already exists"
-            }
+        if await self.player_queries.it_exists(name):
+            raise Exception("Player already exists")
 
-        player = Player(name=name)
-        return await self.player_queries.create_player(player)
+        player = Player(name=name, password=password)
+        try:
+            result = await self.player_queries.register(player)
+            if "player" in result:
+                player_name = result["player"]
+                token = jwt.encode(
+                    {"name": player_name, "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)},
+                    JWT_SECRET_KEY,
+                    algorithm="HS256"
+                )
+                response = {
+                    "message": "Registration successful",
+                    "token": token
+                }
+                return response
+            else:
+                raise Exception("An error occurred while creating the player")
+        except Exception as e:
+            raise Exception(e)
+        
     
+    async def login(self, name: str, password: str) -> dict:
+        """
+        Inicia sesión de un jugador.
+
+        Args:
+            name (str): El nombre del jugador.
+            password (str): La contraseña del jugador.
+
+        Returns:
+            dict: Un diccionario con el mensaje de inicio de sesión.
+        """
+        if not await self.player_queries.it_exists(name):
+            raise Exception("Player not found, please register in /register")
+        
+        player = await self.player_queries.get_player_get_by_name(name)
+        try:
+            isValid = bcrypt.checkpw(password.encode('utf-8'), player["player"]["password"].encode('utf-8'))
+            if not isValid:
+                raise Exception("Invalid password")
+        except Exception as e:
+            raise Exception(f"An error occurred while checking passwords: {e}")
+        
+
+        try:
+            token = jwt.encode(
+                {"name": name, "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)}, 
+                JWT_SECRET_KEY, 
+                algorithm="HS256"
+            )
+            return {
+                "message": "Login successful",
+                "token": token
+            }
+        except Exception as e:
+            raise Exception("An error occurred while logging in")
+
+
     async def get_all_players(self) -> dict:
         return await self.player_queries.get_all_players()
 

@@ -21,29 +21,12 @@ async def player_home():
     return {
         "message": "Welcome to the player home",
         "actions": {
-            "create_player": "/player/create/{name}",
-            "get_all_players": "/player/all",
-            "get_player_by_name": "/player/getByName/{name}"
+            "register": "/register",
+            "login": "/login"
         }
     }
 
-@router.get("/create/{name}", response_model=dict)
-async def create_player(name: str, service: PlayerService = Depends(get_player_service)):
-    
-    player_id = await service.create_player(name)
-    return player_id
 
-@router.get("/all", response_model=dict)
-async def get_all_players(service: PlayerService = Depends(get_player_service)):
-    players = await service.get_all_players()
-    if len(players) == 0:
-        raise HTTPException(status_code=404, detail="No players found")
-    return players
-
-@router.get("/getByName/{name}", response_model=dict)
-async def get_player_by_name(name: str, service: PlayerService = Depends(get_player_service)):
-    player = await service.get_player_get_by_name(name)
-    return player
 #@router.put("/players/{player_id}", response_model=bool)
 #async def update_player(player_id: str, player: Player, service: PlayerService = Depends(get_player_service)):
 #    """
@@ -78,6 +61,10 @@ async def get_player_by_name(name: str, service: PlayerService = Depends(get_pla
 #    if not deleted:
 #        raise HTTPException(status_code=404, detail="Jugador no encontrado")
 #    return True
+
+@router.get("/all")
+async def get_all_players(service: PlayerService = Depends(get_player_service)):
+    return await service.get_all_players()
 
 def error_ocurred(name_error:str):
     return "An error ocurred in player " + name_error
