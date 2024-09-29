@@ -37,7 +37,6 @@ class PlayerQueries:
 			player_dict = player.model_dump()
 			hashed_password = bcrypt.hashpw(player_dict["password"].encode('utf-8'), bcrypt.gensalt(rounds=SALT_ROUNDS))
 			player_dict["password"] = hashed_password.decode('utf-8')
-			print(player_dict)
 			result = await self.collection.insert_one(player_dict)
 			player_dict["_id"] = str(result.inserted_id)
 
@@ -46,7 +45,6 @@ class PlayerQueries:
 				"player": player_dict["name"]
 			}
 		except Exception as e:
-			print(f"Error in PlayerQueries.register: {str(e)}")
 			raise Exception(f"An error occurred while creating the player {e}")
 
 	async def get_player_get_by_name(self, player_name: str) -> dict:
