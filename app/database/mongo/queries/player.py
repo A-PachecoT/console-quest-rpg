@@ -47,7 +47,7 @@ class PlayerQueries:
 		except Exception as e:
 			raise Exception(f"An error occurred while creating the player {e}")
 
-	async def get_player_get_by_name(self, player_name: str) -> dict:
+	async def get_player_by_name(self, player_name: str) -> dict:
 		"""
 		Obtiene un jugador por su ID.
 
