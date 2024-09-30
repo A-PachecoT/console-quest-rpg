@@ -56,10 +56,11 @@ async def start_combat(
         return RedirectResponse(url="/")
 
     response = await player_service.get_player_by_name(user)
-    player = Player.model_validate(response["player"])
+    # player = Player.model_validate(response["player"])
+    player = response["player"]
 
-    if not player:
-        return {"message": "Player does not exist"}
+    if player is None:
+        return  {"message": "Player does not exist"}
 
     return await combat_service.start_combat(player)
 
@@ -75,7 +76,7 @@ async def attack(
         return RedirectResponse(url="/")
 
     response = await player_service.get_player_by_name(user)
-    player = Player.model_validate(response["player"])
+    player = response["player"]
     if not player:
         return {"message": "Player does not exist"}
 
@@ -96,7 +97,7 @@ async def defend(
         return RedirectResponse(url="/")
 
     response = await player_service.get_player_by_name(user)
-    player = Player.model_validate(response["player"])
+    player = response["player"]
 
     if not player:
         return {"message": "Player does not exist"}
@@ -118,7 +119,7 @@ async def ability_menu(
         return RedirectResponse(url="/")
 
     response = await player_service.get_player_by_name(user)
-    player = Player.model_validate(response["player"])
+    player = response["player"]
     if not player:
         return {"message": "Player does not exist"}
 
@@ -137,7 +138,7 @@ async def use_ability(
         return RedirectResponse(url="/")
 
     response = await player_service.get_player_by_name(user)
-    player = Player.model_validate(response["player"])
+    player = response["player"]
     if not player:
         return {"message": "Player does not exist"}
 
