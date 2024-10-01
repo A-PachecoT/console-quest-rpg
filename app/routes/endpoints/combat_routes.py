@@ -60,7 +60,7 @@ async def start_combat(
     player = response["player"]
 
     if player is None:
-        return  {"message": "Player does not exist"}
+        return {"message": "Player does not exist"}
 
     return await combat_service.start_combat(player)
 

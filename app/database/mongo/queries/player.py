@@ -91,13 +91,12 @@ class PlayerQueries:
         Returns:
                 bool: True si se actualizó correctamente, False en caso contrario.
         """
-        player_id = player_data.pop('_id', None)
+        player_id = player_data.pop("_id", None)
         if not player_id:
             return False
 
         result = await self.collection.update_one(
-            {"_id": ObjectId(player_id)},
-            {"$set": player_data}
+            {"_id": ObjectId(player_id)}, {"$set": player_data}
         )
         return result.modified_count > 0
 

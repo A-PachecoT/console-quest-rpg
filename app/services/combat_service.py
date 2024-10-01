@@ -17,10 +17,13 @@ class CombatService:
         enemy = self.enemy_service.GenerateEnemy(player["level"])
         enemy_dict = enemy.dict()
         player["current_enemy"] = enemy_dict
-        
+
         response = await self.player_service.update_player(player)
         if response:
-            return {"message": f"Combat started for {player['name']}", "enemy": enemy_dict}
+            return {
+                "message": f"Combat started for {player['name']}",
+                "enemy": enemy_dict,
+            }
         return {"message": "An error occurred while starting the combat"}
 
     async def combat_status(self, player: dict, combat_actions: dict) -> dict:
@@ -28,8 +31,10 @@ class CombatService:
             return {"message": "Player not in combat"}
 
         status = {
-            f"{player['name']} health": player['current_hp'],
-            f"{player['current_enemy']['name']} health": player['current_enemy']['current_hp'],
+            f"{player['name']} health": player["current_hp"],
+            f"{player['current_enemy']['name']} health": player["current_enemy"][
+                "current_hp"
+            ],
         }
 
         return {"status": status, "actions": combat_actions.get("take a turn", {})}
