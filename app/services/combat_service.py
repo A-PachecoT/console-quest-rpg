@@ -1,3 +1,4 @@
+from app.models.entity import Entity
 from app.models.player import Player
 from app.models.monster import Monster
 from app.services.enemy_service import EnemyService
@@ -32,9 +33,9 @@ class CombatService:
 
         status = {
             f"{player['name']} health": player["current_hp"],
-            f"{player['current_enemy']['name']} health": player["current_enemy"][
-                "current_hp"
-            ],
+            f"{player['name']} mana": player["current_mana"],
+            f"{player['current_enemy']['name']} health": player["current_enemy"]["current_hp"],
+            f"{player['current_enemy']['name']} mana": player["current_enemy"]["current_mana"],
         }
 
         return {"status": status, "actions": combat_actions.get("take a turn", {})}
@@ -63,7 +64,30 @@ class CombatService:
         await self.player_service.update_player(player)
         return {"log": log}
 
-    def _take_turn(self, entity, target, action: int):
+    async def get_ability_menu(self, player: dict) -> dict:
+        ability_list = player["abilities"]
+        return {
+            "message": f"{player['name']} abilities",
+            "use": "/combat/ability/{ability_id}",
+            "abilities": ability_list,
+        }
+
+    async def use_ability(self, player: dict, ability_id: int) -> dict:
+        if not player["current_enemy"]:
+            return {"message": "Player not in combat"}
+
+        log = []
+        ability = player["abilities"][ability_id]
+        log.append(self._use_ability(player, player["current_enemy"], ability))
+        enemy_action = random.randint(1, 2)
+        log.append(self._take_turn(player["current_enemy"], player, enemy_action))
+
+        await self.player_service.update_player(player)
+        
+        await self.player_service.update_player(player)
+        return {"log": log}
+
+    def _take_turn(self, entity: Entity, target: Entity, action: int):
         if action == 1:
             return self._attack(entity, target)
         if action == 2:
@@ -81,17 +105,17 @@ class CombatService:
     def _defend(self, entity):
         entity["is_defending"] = True
         return f"{entity['name']} is defending"
+    
+    def _use_ability(self, entity, target, ability):
+        if entity["current_mana"] < ability["mana_cost"]:
+            return f"{entity['name']} does not have enough mana to use {ability['name']}"
+        entity["current_mana"] -= ability["mana_cost"]
 
-    async def get_ability_menu(self, player: dict) -> dict:
-        ability_list = player["abilities"]
-        return {
-            "message": f"{player['name']} abilities",
-            "use": "/combat/ability/{ability_id}",
-            "abilities": ability_list,
-        }
+        damage_mitigation = (target["defense"]) / (target["defense"] + 5)
+        extra_mitigation = 0.3 if target.get("is_defending", False) else 0
 
-    async def use_ability(self, player: dict, ability_id: int) -> dict:
-        # TODO: Implement ability logic
-        result = {"message": f"{player['name']} used ability {ability_id}"}
-        await self.player_service.update_player(player)
-        return result
+        damage = ability["damage"] * (1 - damage_mitigation) * (1 - extra_mitigation)
+        target["current_hp"] -= damage
+        target["is_defending"] = False
+
+        return f"{entity['name']} used {ability['name']} on {target['name']} for {damage} damage"

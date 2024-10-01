@@ -6,13 +6,16 @@ class Entity(BaseModel):
 
     level: int = 1
 
-    current_hp: int = 100
+    current_hp: float = 100
     max_hp: int = 100
 
-    attack: int = 10
-    defense: int = 5
+    current_mana: int = 100
+    max_mana: int = 100
 
-    is_defendig: bool = False
+    attack: int = 10
+    defense: float = 5
+
+    is_defending: bool = False
 
     class Config:
         schema_extra = {

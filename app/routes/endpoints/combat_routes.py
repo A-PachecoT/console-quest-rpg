@@ -141,5 +141,8 @@ async def use_ability(
     player = response["player"]
     if not player:
         return {"message": "Player does not exist"}
+    
+    use_ability_result = await combat_service.use_ability(player, ability_id)
+    status = await combat_service.combat_status(player, COMBAT_ACTIONS)
 
-    return await combat_service.use_ability(player, ability_id)
+    return {**use_ability_result, **status}

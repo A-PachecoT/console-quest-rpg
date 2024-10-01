@@ -11,8 +11,8 @@ class Monster(Entity):
         self.level = random.randint(minLevel, playerLevel + 1)
         self.max_hp = random.randint(50, 100) * self.level
         self.current_hp = self.max_hp
-        self.attack = random.randint(5, 10) * self.level
-        self.defense = random.randint(1, 3) * self.level
+        self.attack = random.randint(3, 6) * self.level
+        self.defense = (random.random()*1.5 +0.5) * self.level
         self.xp_reward = self.level * 4
 
     class Config:

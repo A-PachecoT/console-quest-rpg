@@ -45,8 +45,11 @@ class PlayerService:
         """
         if await self.player_queries.it_exists(name):
             raise Exception("Player already exists")
-
-        player = Player(name=name, password=password)
+        standard_abilities = [
+            {"id": 0,"name": "Fireball", "description": "A ball of fire", "damage": 30, "mana_cost": 25},
+            {"id": 1, "name": "Iceshard", "description": "A shard of ice", "damage": 15, "mana_cost": 12},
+        ]
+        player = Player(name=name, password=password, abilities=standard_abilities)
         try:
             result = await self.player_queries.register(player)
             if "player" in result:

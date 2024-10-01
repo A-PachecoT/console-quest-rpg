@@ -1,5 +1,6 @@
 from .entity import Entity
 from .monster import Monster
+from .ability import Ability
 from typing import Optional
 
 
@@ -9,6 +10,8 @@ class Player(Entity):
     password: str
 
     current_enemy: Optional[Monster] = None
+
+    abilities: Optional[list[Ability]] = []
 
     class Config:
         allow_population_by_field_name = True

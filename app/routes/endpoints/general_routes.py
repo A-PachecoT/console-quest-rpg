@@ -1,8 +1,6 @@
 from fastapi import APIRouter, Response, Request, Depends
 from pydantic import BaseModel
 from app.services.player_service import PlayerService
-from app.database.mongo.queries import PlayerQueries
-from app.database.mongo.connection import get_database
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
@@ -37,11 +35,21 @@ async def root(request: Request):
         welcome_message = f"Welcome {request.state.user} to the RPG Game API! This is a Software Development Project for the course CC3S2 from the National University of Engineering."
         return {
             "message": f"{welcome_message}",
-            "options": {
-                "message": "Start a combat",
-                "combat": "/combat",
-            },
-            "logout": "/logout",
+            "options": [
+                {
+                    "message": "Start a combat",
+                    "combat": "/combat",
+                },
+                {
+                    "message": "Check your status",
+                    "status": "/status"
+                },
+                {
+                    "logout": "/logout"
+                }
+                
+                
+            ],
         }
     else:
         welcome_message = "Welcome to the RPG Game API! This is a Software Development Project for the course CC3S2 from the National University of Engineering."
@@ -132,4 +140,21 @@ async def game_info():
         "name": "RPG Game",
         "version": "0.3.0",
         "description": "A turn-based RPG game with FastAPI backend",
+    }
+
+@router.get("/status")
+async def status(
+    request: Request,
+    player_service: PlayerService = Depends(PlayerService.get_player_service),
+):
+    user = getattr(request.state, "user", None)
+    if not user:
+        return RedirectResponse(url="/")
+
+    response = await player_service.get_player_by_name(user)
+    player = response["player"]
+
+    return {
+        "message": "Player status",
+        "player": player,
     }

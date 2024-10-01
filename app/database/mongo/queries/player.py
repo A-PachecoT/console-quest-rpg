@@ -63,6 +63,7 @@ class PlayerQueries:
         player_data = await self.collection.find_one({"name": player_name})
         if player_data:
             player_data["_id"] = str(player_data["_id"])
+            player_data.pop("password")
 
             return {"message": "Player retrieved successfully", "player": player_data}
         return {"message": "Player not found"}
