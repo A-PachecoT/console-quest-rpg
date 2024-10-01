@@ -14,7 +14,6 @@ class Player(Entity):
         allow_population_by_field_name = True
         json_schema_extra = {
             "example": {
-                "id": 1,
                 "name": "Hero",
                 "password": "123456",
                 "level": 1,

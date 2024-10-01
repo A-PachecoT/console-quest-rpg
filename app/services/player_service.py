@@ -4,6 +4,7 @@ import jwt
 import bcrypt
 import datetime
 from app.config import settings
+from app.database.mongo.connection import get_database
 
 JWT_SECRET_KEY = settings.JWT_SECRET_KEY
 SALT_ROUNDS = settings.SALT_ROUNDS
@@ -22,6 +23,15 @@ class PlayerService:
             player_queries (PlayerQueries): Instancia de las consultas de jugadores.
         """
         self.player_queries = player_queries
+
+    def get_player_service():
+        """
+        Retorna:
+            PlayerService: Una instancia del servicio de jugadores con sus dependencias inyectadas.
+        """
+        db = get_database()
+        player_queries = PlayerQueries(db)
+        return PlayerService(player_queries)
 
     async def register(self, name: str, password: str) -> dict:
         """
@@ -99,7 +109,7 @@ class PlayerService:
     async def get_player_by_name(self, player_name: str) -> dict:
         return await self.player_queries.get_player_by_name(player_name)
 
-    async def update_player(self, player_id: str, player: Player) -> bool:
+    async def update_player(self, player: Player) -> bool:
         """
         Actualiza un jugador existente.
 
@@ -110,7 +120,7 @@ class PlayerService:
         Returns:
             bool: True si la actualización fue exitosa, False en caso contrario.
         """
-        return await self.player_queries.update_player(player_id, player)
+        return await self.player_queries.update_player(player)
 
     async def delete_player(self, player_id: str) -> bool:
         """

@@ -81,20 +81,22 @@ class PlayerQueries:
             players.append(Player(**player_data))
         return {"message": "Players retrieved successfully", "players": players}
 
-    async def update_player(self, player_id: str, player: Player) -> bool:
+    async def update_player(self, player_data: dict) -> bool:
         """
         Actualiza los datos de un jugador.
 
         Args:
-                player_id (str): ID del jugador a actualizar.
-                player (Player): Objeto Player con los nuevos datos del jugador.
+                player_data (dict): Diccionario con los nuevos datos del jugador.
 
         Returns:
                 bool: True si se actualizó correctamente, False en caso contrario.
         """
-        update_data = player.dict(exclude={"id"}, exclude_unset=True)
+        player_id = player_data.pop("_id", None)
+        if not player_id:
+            return False
+
         result = await self.collection.update_one(
-            {"_id": ObjectId(player_id)}, {"$set": update_data}
+            {"_id": ObjectId(player_id)}, {"$set": player_data}
         )
         return result.modified_count > 0
 
