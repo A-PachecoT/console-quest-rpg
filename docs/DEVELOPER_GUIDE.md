@@ -48,17 +48,6 @@ pre-commit install
 pre-commit run --all-files
 ```
 
-### Useful Docker Commands
-
-- Rebuild and restart all services:
-```
-docker-compose stop && docker-compose up -d --force-recreate --build
-```
-
-- Stop all services:
-```
-docker-compose down
-```
 
 ## Monitoring
 
