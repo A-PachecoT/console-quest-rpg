@@ -6,7 +6,7 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from fastapi.staticfiles import StaticFiles
 from fastapi import Request
 import jwt
-from app.utils.logger import main_logger, api_logger
+from app.utils.logger import main_logger, api_logger, db_logger
 from prometheus_client import Counter, Histogram
 import time
 
@@ -45,7 +45,7 @@ async def metrics_middleware(request: Request, call_next):
         process_time
     )
     api_logger.info(
-        f'"{request.method} {request.url.path} HTTP/1.1" {response.status_code}'
+        f'"{request.method} {request.url.path} HTTP/1.1" {response.status_code} - {process_time:.4f}s'
     )
     return response
 
@@ -58,6 +58,7 @@ app.mount("/static", StaticFiles(directory="app/views"), name="static")
 async def startup_db_client():
     main_logger.info("Starting up database client")
     MongoConnection.connect_to_mongo(settings.MONGO_URL, settings.MONGO_DB_NAME)
+    db_logger.info(f"Connected to MongoDB at {settings.MONGO_URL}")
     main_logger.info("Database client started successfully")
 
 
@@ -65,6 +66,7 @@ async def startup_db_client():
 async def shutdown_db_client():
     main_logger.info("Shutting down database client")
     MongoConnection.close_mongo_connection()
+    db_logger.info("Disconnected from MongoDB")
     main_logger.info("Database client shut down successfully")
 
 

@@ -1,6 +1,7 @@
 import random
 from pydantic import Field, ConfigDict
 from .entity import Entity
+from app.utils.logger import monster_logger
 
 
 class Monster(Entity):
@@ -14,6 +15,7 @@ class Monster(Entity):
         self.attack = random.randint(3, 6) * self.level
         self.defense = (random.random() * 1.5 + 0.5) * self.level
         self.xp_reward = self.level * 4
+        monster_logger.info(f"Generated monster: {self.name} (Level {self.level})")
 
     model_config = ConfigDict(
         json_schema_extra={

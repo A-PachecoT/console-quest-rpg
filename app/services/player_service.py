@@ -5,6 +5,7 @@ import bcrypt
 import datetime
 from app.config import settings
 from app.database.mongo.connection import get_database
+from app.utils.logger import player_logger
 
 JWT_SECRET_KEY = settings.JWT_SECRET_KEY
 SALT_ROUNDS = settings.SALT_ROUNDS
@@ -46,8 +47,20 @@ class PlayerService:
         if await self.player_queries.it_exists(name):
             raise Exception("Player already exists")
         standard_abilities = [
-            {"id": 0,"name": "Fireball", "description": "A ball of fire", "damage": 30, "mana_cost": 25},
-            {"id": 1, "name": "Iceshard", "description": "A shard of ice", "damage": 15, "mana_cost": 12},
+            {
+                "id": 0,
+                "name": "Fireball",
+                "description": "A ball of fire",
+                "damage": 30,
+                "mana_cost": 25,
+            },
+            {
+                "id": 1,
+                "name": "Iceshard",
+                "description": "A shard of ice",
+                "damage": 15,
+                "mana_cost": 12,
+            },
         ]
         player = Player(name=name, password=password, abilities=standard_abilities)
         try:
@@ -107,53 +120,30 @@ class PlayerService:
             raise Exception("An error occurred while logging in")
 
     async def get_all_players(self) -> dict:
+        player_logger.info("Fetching all players")
         return await self.player_queries.get_all_players()
 
     async def get_player_by_name(self, player_name: str) -> dict:
+        player_logger.info(f"Fetching player by name: {player_name}")
         return await self.player_queries.get_player_by_name(player_name)
 
     async def update_player(self, player: Player) -> bool:
-        """
-        Actualiza un jugador existente.
-
-        Args:
-            player_id (str): El ID del jugador a actualizar.
-            player (Player): Los nuevos datos del jugador.
-
-        Returns:
-            bool: True si la actualización fue exitosa, False en caso contrario.
-        """
+        player_logger.info(f"Updating player: {player.name}")
         return await self.player_queries.update_player(player)
 
     async def delete_player(self, player_id: str) -> bool:
-        """
-        Elimina un jugador.
-
-        Args:
-            player_id (str): El ID del jugador a eliminar.
-
-        Returns:
-            bool: True si la eliminación fue exitosa, False en caso contrario.
-        """
+        player_logger.info(f"Deleting player with ID: {player_id}")
         return await self.player_queries.delete_player(player_id)
 
     def add_experience(self, player: dict, amount: int) -> bool:
-        """
-        Suma experiencia a un jugador.
-
-        Args:
-            amount (int): La cantidad de experiencia a sumar.
-            player (dict): El jugador al que se le sumará la experiencia.
-
-        Returns:
-            dict: El jugador con la nueva experiencia.
-        """
+        player_logger.info(f"Adding {amount} experience to player: {player['name']}")
         player["xp"] += amount
         if player["xp"] >= player["target_xp"]:
             self._level_up(player)
+            player_logger.info(f"Player {player['name']} leveled up!")
             return True
         return False
-    
+
     def _level_up(self, player: dict) -> dict:
         """
         Sube de nivel a un jugador.
@@ -175,7 +165,7 @@ class PlayerService:
         player["defense"] += 1
 
         return player
-    
+
     def die(self, player: dict) -> dict:
         """
         Mata a un jugador.
