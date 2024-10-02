@@ -163,7 +163,11 @@ class PlayerService:
         player_logger.info(f"Player {player['name']} now has {player['xp']} XP")
         return False
 
+
     def _level_up(self, player: dict) -> dict:
+        """
+        Sube de nivel a un jugador.
+        """
         old_level = player["level"]
         player["level"] += 1
         player["target_xp"] = player["level"] * 100
