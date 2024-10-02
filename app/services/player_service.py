@@ -138,10 +138,10 @@ class PlayerService:
         return await self.player_queries.get_player_by_name(player_name)
 
     async def update_player(self, player: Player) -> bool:
-        player_logger.info(f"Updating player: {player.name}")
+        player_logger.info(f"Updating player: {player['name']}")
         result = await self.player_queries.update_player(player)
         if not result:
-            player_logger.warning(f"Failed to update player: {player.name}")
+            player_logger.warning(f"Failed to update player: {player['name']}")
         return result
 
     async def delete_player(self, player_id: str) -> bool:
@@ -162,7 +162,6 @@ class PlayerService:
             return True
         player_logger.info(f"Player {player['name']} now has {player['xp']} XP")
         return False
-
 
     def _level_up(self, player: dict) -> dict:
         """
