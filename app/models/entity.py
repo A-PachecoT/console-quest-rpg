@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class Entity(BaseModel):
@@ -17,8 +17,8 @@ class Entity(BaseModel):
 
     is_defending: bool = False
 
-    class Config:
-        schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": 1,
                 "name": "Goblin",
@@ -29,3 +29,4 @@ class Entity(BaseModel):
                 "defense": 5,
             }
         }
+    )

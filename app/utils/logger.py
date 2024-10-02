@@ -44,6 +44,9 @@ def setup_logger(name, log_file, level=logging.INFO):
     custom_filter = CustomFilter()
     logger.addFilter(custom_filter)
 
+    # Prevent propagation to root logger
+    logger.propagate = False
+
     return logger
 
 
@@ -51,3 +54,6 @@ def setup_logger(name, log_file, level=logging.INFO):
 main_logger = setup_logger("main", "/app/logs/main.log")
 api_logger = setup_logger("api", "/app/logs/api.log")
 db_logger = setup_logger("database", "/app/logs/database.log")
+
+# Disable uvicorn access log
+logging.getLogger("uvicorn.access").disabled = True

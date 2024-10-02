@@ -45,7 +45,7 @@ async def metrics_middleware(request: Request, call_next):
         process_time
     )
     api_logger.info(
-        f"Request: {request.method} {request.url.path} - Process time: {process_time:.2f}s"
+        f'"{request.method} {request.url.path} HTTP/1.1" {response.status_code}'
     )
     return response
 

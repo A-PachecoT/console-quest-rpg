@@ -49,15 +49,28 @@ pre-commit run --all-files
 ```
 
 ### Useful Docker Commands
-
-- Rebuild and restart all services:
+- Start all services:
 ```
-docker-compose stop && docker-compose up -d --force-recreate --build
+docker compose up -d
+```
+
+- View real-time logs of the backend:
+```
+docker compose logs -f backend
 ```
 
 - Stop all services:
 ```
-docker-compose down
+docker compose down
+```
+- Rebuild and restart a specific service (e.g., backend) **after code changes**:
+```
+docker compose up -d --build
+```
+
+- After a code change, a single command to rebuild and restart the backend and follow the logs:
+```
+docker compose up -d --build backend && docker compose logs -f backend
 ```
 
 ## Monitoring
