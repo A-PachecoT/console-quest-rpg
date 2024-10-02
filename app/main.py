@@ -28,9 +28,9 @@ LATENCY = Histogram(
 def generate_markdown_banner():
     markdown = Markdown(
         """
-# 🎮 Console Quest RPG
+# 🎮 Console Quest RPG ⚔️
 ### Made with ❤️ in Perú
-### By Pacheco André, Pezo Sergio, Torres Oscar ✨
+### By Pacheco André, Pezo Sergio, Torres Oscar 2️⃣0️⃣2️⃣4️⃣
 - **Powered by**: FastAPI
 - **Status**: Initializing...
 ---
