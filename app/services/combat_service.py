@@ -37,6 +37,10 @@ class CombatService:
         return {"message": "An error occurred while starting the combat"}
 
     async def combat_status(self, player: dict, combat_actions: dict) -> dict:
+        if player["current_enemy"] is None:
+            combat_logger.warning(f"Player {player['name']} is not in combat")
+            return {"message": "Player is not in combat"}
+
         status = {
             f"{player['name']} health": player["current_hp"],
             f"{player['name']} mana": player["current_mana"],

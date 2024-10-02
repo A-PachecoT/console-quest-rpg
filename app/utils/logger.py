@@ -32,13 +32,6 @@ def setup_logger(name, log_file, level=logging.INFO):
     os.makedirs(os.path.dirname(log_file), exist_ok=True)
     formatter = MetricsFormatter(
         "%(log_color)s%(asctime)s | %(filename)s | %(levelname)s: %(message)s",
-        log_colors={
-            "DEBUG": "cyan",
-            "INFO": "green",
-            "WARNING": "yellow",
-            "ERROR": "red",
-            "CRITICAL": "red,bg_white",
-        },
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
