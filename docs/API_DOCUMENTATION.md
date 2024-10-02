@@ -6,6 +6,8 @@ All API endpoints are relative to: `http://localhost:8000`
 
 ## Endpoints
 
+As we are using `fastapi` for this project, you canter to default swagger in `http://localhost:8000/docs`
+
 ### General Routes
 
 - `GET /`: Home page
@@ -16,20 +18,17 @@ All API endpoints are relative to: `http://localhost:8000`
 
 - `POST /login`: User login
   - Request Body: `{"username": "string", "password": "string"}`
-  - Response: Login status message and sets access token cookie
+  - Response: Login status message and sets `access_token` cookie
 
 - `GET /register`: Render registration page
   - Response: HTML registration page
 
 - `POST /register`: User registration
   - Request Body: `{"username": "string", "password": "string"}`
-  - Response: Registration status message and sets access token cookie
+  - Response: Registration status message and sets `access_token` cookie
 
 - `GET /logout`: User logout
-  - Response: Logout confirmation message and removes access token cookie
-
-- `GET /health`: API health check
-  - Response: `{"status": "healthy"}`
+  - Response: Logout confirmation message and removes `access_token` cookie
 
 - `GET /game-info`: Game information
   - Response: `{"name": "RPG Game", "version": "0.3.0", "description": "A turn-based RPG game with FastAPI backend"}`
@@ -40,6 +39,9 @@ All API endpoints are relative to: `http://localhost:8000`
   - Response: Welcome message and available actions
 
 - `GET /player/all`: Get all players
+  - Response: List of all players
+
+- `DELETE /player/delete/all`: Delete all players
   - Response: List of all players
 
 ### Combat Routes
@@ -64,7 +66,9 @@ All API endpoints are relative to: `http://localhost:8000`
 
 ## Authentication
 
-Most endpoints require authentication. After successful login or registration, an access token is set as an HTTP-only cookie. This token is used for subsequent authenticated requests.
+This project use JWT as authentication, so many endpoints require a cooki session. After successful login or registration, an `access_token` is set as an HTTP-only cookie. This token is used for subsequent authenticated requests. 
+
+
 
 ## Error Handling
 
