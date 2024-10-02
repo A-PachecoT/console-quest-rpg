@@ -6,3 +6,7 @@ class EnemyService:
         enemy = Monster(name="Goblin")
         enemy.GenerateRandomStats(playerLevel)
         return enemy
+
+    def die(self, player: dict) -> dict:
+        player["current_enemy"] = None
+        return player

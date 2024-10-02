@@ -49,6 +49,22 @@ class CombatService:
         enemy_action = random.randint(1, 2)
         log.append(self._take_turn(player["current_enemy"], player, enemy_action))
 
+        if(player["current_enemy"]["current_hp"] <= 0):
+            levelFlag = self.player_service.add_experience(player, player["current_enemy"]["xp_reward"])
+            self.enemy_service.die(player)
+
+            log.append(f"{player['name']} defeated {player['current_enemy']['name']}")
+            log.append(f"{player['name']} gained {player['current_enemy']['xp_reward']} experience")
+            if(levelFlag):
+                log.append(f"{player['name']} leveled up to level {player['level']}!")
+            log.append("To start a combat, go to /combat/start")
+        elif(player["current_hp"] <= 0):
+            self.player_service.die(player)
+
+            log.append(f"{player['name']} was defeated by {player['current_enemy']['name']}")
+            log.append("Game over")
+            log.append("To start a combat, go to /combat/start")
+
         await self.player_service.update_player(player)
         return {"log": log}
 
@@ -60,6 +76,13 @@ class CombatService:
         log.append(self._take_turn(player, player["current_enemy"], 2))
         enemy_action = random.randint(1, 2)
         log.append(self._take_turn(player["current_enemy"], player, enemy_action))
+
+        if(player["current_hp"] <= 0):
+            self.player_service.die(player)
+
+            log.append(f"{player['name']} was defeated by {player['current_enemy']['name']}")
+            log.append("Game over")
+            log.append("To start a combat, go to /combat/start")
 
         await self.player_service.update_player(player)
         return {"log": log}

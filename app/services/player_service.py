@@ -136,3 +136,54 @@ class PlayerService:
             bool: True si la eliminación fue exitosa, False en caso contrario.
         """
         return await self.player_queries.delete_player(player_id)
+
+    def add_experience(self, amount: int, player: dict) -> bool:
+        """
+        Suma experiencia a un jugador.
+
+        Args:
+            amount (int): La cantidad de experiencia a sumar.
+            player (dict): El jugador al que se le sumará la experiencia.
+
+        Returns:
+            dict: El jugador con la nueva experiencia.
+        """
+        player["exp"] += amount
+        if player["exp"] >= player["target_exp"]:
+            self._level_up(player)
+            return True
+        return False
+    
+    def _level_up(self, player: dict) -> dict:
+        """
+        Sube de nivel a un jugador.
+
+        Args:
+            player (dict): El jugador a subir de nivel.
+
+        Returns:
+            dict: El jugador con el nuevo nivel.
+        """
+        player["level"] += 1
+        player["target_exp"] = player["level"] * 100
+        player["exp"] = 0
+        player["max_hp"] += 10
+        player["current_hp"] = player["max_hp"]
+        player["max_mana"] += 5
+        player["current_mana"] = player["max_mana"]
+        player["attack"] += 2
+        player["defense"] += 1
+
+        return player
+    
+    def die(self, player: dict) -> dict:
+        """
+        Mata a un jugador.
+
+        Args:
+            player (dict): El jugador a matar.
+        """
+        player["current_hp"] = player["max_hp"]
+        player["current_mana"] = player["max_mana"]
+        player["current_enemy"] = None
+        return player
