@@ -6,66 +6,9 @@ En este archivo Markdown, nos moveremos al español.
 
 
 
-### Monitorización de estadísticas de combates
-
-Para la monitorización se trabajo con la librería de python `prometheus_fastapi_instrumentator` la cual nos brinda métricas prederterminadas de todo nuestro server. En específico, se tomó una que cuenta todas las peticiones individualmente en `app/main.py`.
-
-``` Python
-instrumentator.add(
-    metrics.requests(
-        metric_name="http_all_requests",
-    )
-)
-```
-
-Además nos permite añadir métricas personalizadas, con `prometheus_client`.
-
-Para este proyecto se personalizó 3 métricas en `app/metrics.py` para instrumentar:
-
-- `PLAYER_DAMAGE`: Daño del jugador.
-- `PLAYER_DAMAGE`: Nivel del jugador.
-- `COMBAT_OUTCOMES`: Resultados de combate.
-
-Entonces, finalmente tenemos nuestras 4 métricas de interest.
-
-Primero, consultamos en `localhost:9090` para ver si nuestro servicio de Prometheus no tuvo ningun problema
+### Sistema de subida de nivel automático
 
 
-
-Ahora toca, ir a Grafana en `localhost:3000` para visualizar nuestras métricas. Una vez dentro, tenemos que añadir un DataSource nuevo para usar Prometheus.
-
-![](https://i.imgur.com/N8sGUuP.png)
-
-Una vez dentro conectarse a Prometheus con `http://prometheus:9090`, y cambiamos el método a `GET`, finalmente damos a Save.
-
-![](https://imgur.com/IfQa9fV.png)
-
-Ahora si creamos un dashboard
-
-![](https://imgur.com/yRqXXc9.png)
-![](https://imgur.com/I2HX9QT.png)
-
-E importamos nuestro archivo `grafana/main-dashboard.json`
-
-Guardamos y tendríamos que tener una vista vacía si es que no jugamos todavía, si no, nuestro dashboard tendría este aspecto:
-
-![](https://imgur.com/QDzztLf.png)
-
-Con las siguientes visualizaciones:
-
-- `Visitas Home`: Un contador que muestra el número total de visitas a la página principal del juego. Esto ayuda a entender el tráfico general del sitio.
-
-- `Combat Preferences`: Un gráfico circular que ilustra las preferencias de los jugadores en cuanto a las acciones de combate (ataque, defensa, uso de habilidades). Esto proporciona información sobre las estrategias más populares entre los jugadores.
-
-- `Nivel de Jugadores`: Un gráfico de barras que muestra la distribución de niveles entre los jugadores. Esto permite visualizar rápidamente la progresión general de los jugadores en el juego.
-
-- `Daño inflingido por jugador`: Un gráfico de líneas que muestra el daño total infligido por cada jugador a lo largo del tiempo. Esto ayuda a identificar a los jugadores más efectivos en combate y a observar tendencias en el rendimiento de los jugadores.
-
-- `Victorias por jugador`: Un gráfico de barras que muestra el número de victorias de cada jugador. Esto permite identificar a los jugadores más exitosos en los combates.
-
-- `Derrotas por jugador`: Similar al gráfico de victorias, pero mostrando el número de derrotas de cada jugador. Esto ayuda a identificar a los jugadores que pueden necesitar ayuda o mejoras en sus estrategias de juego.
-
-Por lo que se logró implementar correctamente métricas para visualizar el rendimiento de los combates de nuestros jugadores.
 
 ### Dockerización del juego RPG
 
@@ -156,16 +99,82 @@ Este archivo `compose.yml` define cuatro servicios principales:
 3. `prometheus`: Servicio para recolectar métricas.
 4. `grafana`: Herramienta para visualizar las métricas recolectadas.
 
-Además, se configuran volúmenes para persistir los datos de MongoDB, Prometheus y Grafana.
+Además, se configuran volúmenes para persistir los datos de MongoDB, Prometheus y Grafana, no olvidar para crear la carpeta `grafana_data`.
+
+```
+mkdir -p grafana_data
+```
 
 Con esta configuración, logramos dockerizar exitosamente nuestro juego RPG, incluyendo todos los servicios necesarios para su funcionamiento y monitoreo. Esto nos permite desplegar fácilmente toda la infraestructura necesaria con un simple comando:
 
-`docker compose up --build -d`.
+```
+docker compose up --build -d
+```
 
 Se logró implementar correctamente la dockerización de nuestro juego RPG, lo que facilita enormemente su despliegue y escalabilidad. El siguiente paso sería mejorar las prácticas de seguridad, como por ejemplo, no exponer las credenciales de la base de datos directamente en el archivo `compose.yml`, sino utilizar variables de entorno o secretos de Docker para manejar información sensible de manera más segura.
 
-### Sistema de subida de nivel automático
 
+
+### Monitorización de estadísticas de combates
+
+Para la monitorización se trabajo con la librería de python `prometheus_fastapi_instrumentator` la cual nos brinda métricas prederterminadas de todo nuestro server. En específico, se tomó una que cuenta todas las peticiones individualmente en `app/main.py`.
+
+``` Python
+instrumentator.add(
+    metrics.requests(
+        metric_name="http_all_requests",
+    )
+)
+```
+
+Además nos permite añadir métricas personalizadas, con `prometheus_client`.
+
+Para este proyecto se personalizó 3 métricas en `app/metrics.py` para instrumentar:
+
+- `PLAYER_DAMAGE`: Daño del jugador.
+- `PLAYER_DAMAGE`: Nivel del jugador.
+- `COMBAT_OUTCOMES`: Resultados de combate.
+
+Entonces, finalmente tenemos nuestras 4 métricas de interest.
+
+Primero, consultamos en `localhost:9090` para ver si nuestro servicio de Prometheus no tuvo ningun problema
+
+
+
+Ahora toca, ir a Grafana en `localhost:3000` para visualizar nuestras métricas. Una vez dentro, tenemos que añadir un DataSource nuevo para usar Prometheus.
+
+![](https://i.imgur.com/N8sGUuP.png)
+
+Una vez dentro conectarse a Prometheus con `http://prometheus:9090`, y cambiamos el método a `GET`, finalmente damos a Save.
+
+![](https://imgur.com/IfQa9fV.png)
+
+Ahora si creamos un dashboard
+
+![](https://imgur.com/yRqXXc9.png)
+![](https://imgur.com/I2HX9QT.png)
+
+E importamos nuestro archivo `grafana/main-dashboard.json`
+
+Guardamos y tendríamos que tener una vista vacía si es que no jugamos todavía, si no, nuestro dashboard tendría este aspecto:
+
+![](https://imgur.com/QDzztLf.png)
+
+Con las siguientes visualizaciones:
+
+- `Visitas Home`: Un contador que muestra el número total de visitas a la página principal del juego. Esto ayuda a entender el tráfico general del sitio.
+
+- `Combat Preferences`: Un gráfico circular que ilustra las preferencias de los jugadores en cuanto a las acciones de combate (ataque, defensa, uso de habilidades). Esto proporciona información sobre las estrategias más populares entre los jugadores.
+
+- `Nivel de Jugadores`: Un gráfico de barras que muestra la distribución de niveles entre los jugadores. Esto permite visualizar rápidamente la progresión general de los jugadores en el juego.
+
+- `Daño inflingido por jugador`: Un gráfico de líneas que muestra el daño total infligido por cada jugador a lo largo del tiempo. Esto ayuda a identificar a los jugadores más efectivos en combate y a observar tendencias en el rendimiento de los jugadores.
+
+- `Victorias por jugador`: Un gráfico de barras que muestra el número de victorias de cada jugador. Esto permite identificar a los jugadores más exitosos en los combates.
+
+- `Derrotas por jugador`: Similar al gráfico de victorias, pero mostrando el número de derrotas de cada jugador. Esto ayuda a identificar a los jugadores que pueden necesitar ayuda o mejoras en sus estrategias de juego.
+
+Por lo que se logró implementar correctamente métricas para visualizar el rendimiento de los combates de nuestros jugadores.
 
 
 ### Resolución de conflictos en Git usando Git Mergetool
