@@ -22,6 +22,7 @@ COMBAT_ACTIONS = {
         ],
         # "heal": "/combat/heal: this is for healing your character"
     },
+    "status": "/status",
     "home": ["/", "Return to the home page"],
 }
 
@@ -60,7 +61,7 @@ async def start_combat(
     player = response["player"]
 
     if player is None:
-        return {"message": "Player does not exist"}
+        return {"message": "Player does not exist", "go_to": "/combat"}
 
     return await combat_service.start_combat(player)
 
@@ -80,17 +81,17 @@ async def attack(
     player = response["player"]
 
     if not player:
-        return {"message": "Player does not exist"}
-    
+        return {"message": "Player does not exist", "go_to": "/"}
+
     if not player["current_enemy"]:
-        return {"message": "Player not in combat"}
+        return {"message": "Player not in combat", "go_to": "/combat"}
 
     attack_result = await combat_service.attack(player)
 
     if player["current_enemy"]:
         status = await combat_service.combat_status(player, COMBAT_ACTIONS)
 
-    return {**attack_result, **status}
+    return {**attack_result, **status, "go_to": "/combat"}
 
 
 @router.get("/defend", response_model=dict)
@@ -108,16 +109,19 @@ async def defend(
 
     if not player:
         return {"message": "Player does not exist"}
-    
+
     if not player["current_enemy"]:
-        return {"message": "Player not in combat"}
+        return {
+            "message": "Player not in combat, go to combat and start a combat",
+            "go_to": "/combat",
+        }
 
     status = {}
     defend_result = await combat_service.defend(player)
     if player["current_enemy"]:
         status = await combat_service.combat_status(player, COMBAT_ACTIONS)
 
-    return {**defend_result, **status}
+    return {**defend_result, **status, "go_to": "/combat"}
 
 
 @router.get("/ability", response_model=dict)
@@ -154,13 +158,16 @@ async def use_ability(
 
     if not player:
         return {"message": "Player does not exist"}
-    
+
     if not player["current_enemy"]:
-        return {"message": "Player not in combat"}
-    
+        return {
+            "message": "Player not in combat, go to combat and start a combat",
+            "go_to": "/combat",
+        }
+
     status = {}
     use_ability_result = await combat_service.use_ability(player, ability_id)
     if player["current_enemy"]:
         status = await combat_service.combat_status(player, COMBAT_ACTIONS)
 
-    return {**use_ability_result, **status}
+    return {**use_ability_result, **status, "go_to": "/combat"}

@@ -153,4 +153,6 @@ async def status(
     return {
         "message": "Player status",
         "player": player,
+        "go_to": "/combat",
+        "go_home": "/",
     }

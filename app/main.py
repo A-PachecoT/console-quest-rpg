@@ -2,10 +2,15 @@ from fastapi import FastAPI
 from app.database.mongo.connection import MongoConnection
 from app.config import settings
 from app.routes import router
-from prometheus_fastapi_instrumentator import Instrumentator
+from prometheus_fastapi_instrumentator import Instrumentator, metrics
 from fastapi.staticfiles import StaticFiles
 from fastapi import Request
 import jwt
+from app.metrics import (
+    player_damage_metric,
+    player_level_metric,
+    combat_outcomes_metric,
+)
 
 # Creamos una instancia de la aplicación FastAPI
 app = FastAPI(
@@ -44,5 +49,19 @@ async def shutdown_db_client():
 # Incluimos el router de la aplicación con el prefijo "/api"
 app.include_router(router)
 
-# Configuramos Prometheus para instrumentar y exponer métricas de la aplicación
-Instrumentator().instrument(app).expose(app)
+# Configure Prometheus to instrument and expose metrics for the application
+instrumentator = Instrumentator().instrument(app)
+instrumentator.add(
+    metrics.requests(
+        metric_name="http_all_requests",
+    )
+)
+
+# Add custom metrics to instrumentator
+instrumentator.add(player_damage_metric())
+instrumentator.add(player_level_metric())
+instrumentator.add(combat_outcomes_metric())
+
+
+# Initialize the instrumentator
+instrumentator.expose(app)
