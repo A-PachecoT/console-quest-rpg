@@ -81,7 +81,7 @@ async def attack(
 
     if not player:
         return {"message": "Player does not exist"}
-    
+
     if not player["current_enemy"]:
         return {"message": "Player not in combat"}
 
@@ -108,7 +108,7 @@ async def defend(
 
     if not player:
         return {"message": "Player does not exist"}
-    
+
     if not player["current_enemy"]:
         return {"message": "Player not in combat"}
 
@@ -154,10 +154,10 @@ async def use_ability(
 
     if not player:
         return {"message": "Player does not exist"}
-    
+
     if not player["current_enemy"]:
         return {"message": "Player not in combat"}
-    
+
     status = {}
     use_ability_result = await combat_service.use_ability(player, ability_id)
     if player["current_enemy"]:
