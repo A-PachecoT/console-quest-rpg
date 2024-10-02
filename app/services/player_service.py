@@ -46,8 +46,20 @@ class PlayerService:
         if await self.player_queries.it_exists(name):
             raise Exception("Player already exists")
         standard_abilities = [
-            {"id": 0,"name": "Fireball", "description": "A ball of fire", "damage": 30, "mana_cost": 25},
-            {"id": 1, "name": "Iceshard", "description": "A shard of ice", "damage": 15, "mana_cost": 12},
+            {
+                "id": 0,
+                "name": "Fireball",
+                "description": "A ball of fire",
+                "damage": 30,
+                "mana_cost": 25,
+            },
+            {
+                "id": 1,
+                "name": "Iceshard",
+                "description": "A shard of ice",
+                "damage": 15,
+                "mana_cost": 12,
+            },
         ]
         player = Player(name=name, password=password, abilities=standard_abilities)
         try:
@@ -83,10 +95,10 @@ class PlayerService:
         if not await self.player_queries.it_exists(name):
             raise Exception("Player not found, please register in /register")
 
-        player = await self.player_queries.get_player_by_name(name)
         try:
+            result = await self.player_queries.login(name)
             isValid = bcrypt.checkpw(
-                password.encode("utf-8"), player["player"]["password"].encode("utf-8")
+                password.encode("utf-8"), result["password"].encode("utf-8")
             )
             if not isValid:
                 raise Exception("Invalid password")
@@ -108,6 +120,9 @@ class PlayerService:
 
     async def get_all_players(self) -> dict:
         return await self.player_queries.get_all_players()
+
+    async def delete_all_players(self) -> dict:
+        return await self.player_queries.delete_all_players()
 
     async def get_player_by_name(self, player_name: str) -> dict:
         return await self.player_queries.get_player_by_name(player_name)
@@ -153,7 +168,7 @@ class PlayerService:
             self._level_up(player)
             return True
         return False
-    
+
     def _level_up(self, player: dict) -> dict:
         """
         Sube de nivel a un jugador.
@@ -175,7 +190,7 @@ class PlayerService:
         player["defense"] += 1
 
         return player
-    
+
     def die(self, player: dict) -> dict:
         """
         Mata a un jugador.

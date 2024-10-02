@@ -25,6 +25,33 @@ class PlayerQueries:
         """
         self.collection = db.players
 
+    async def login(self, player_name: str) -> dict:
+        """
+        Retrieves the player's password for login verification.
+
+        Args:
+            player_name (str): The name of the player attempting to log in.
+
+        Returns:
+            dict: A dictionary containing a message and the player's hashed password.
+                  If the player is not found, returns None for the password.
+
+        Raises:
+            Exception: If there's an error during the database query.
+        """
+        try:
+            player_data = await self.collection.find_one({"name": player_name})
+
+            if not player_data:
+                return {"message": "Player not found", "player": None}
+
+            player_data["_id"] = str(player_data["_id"])
+            player_password = player_data["password"]
+
+            return {"message": "Login successful", "password": player_password}
+        except Exception as e:
+            raise Exception(f"An error occurred while retrieving player data: {str(e)}")
+
     async def register(self, player: Player) -> dict:
         """
         Crea un nuevo jugador en la base de datos.
@@ -113,6 +140,22 @@ class PlayerQueries:
         """
         result = await self.collection.delete_one({"_id": ObjectId(player_id)})
         return result.deleted_count > 0
+
+    async def delete_all_players(self) -> dict:
+        """
+        Elimina todos los jugadores de la base de datos.
+
+        Returns:
+            dict: Un diccionario con un mensaje y el número de jugadores eliminados.
+        """
+        try:
+            result = await self.collection.delete_many({})
+            return {
+                "message": "All players deleted successfully",
+                "deleted_count": result.deleted_count,
+            }
+        except Exception as e:
+            raise Exception(f"An error occurred while deleting all players: {str(e)}")
 
     async def it_exists(self, player_name: str) -> bool:
         """
