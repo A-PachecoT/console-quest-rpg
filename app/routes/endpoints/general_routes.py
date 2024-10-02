@@ -40,15 +40,8 @@ async def root(request: Request):
                     "message": "Start a combat",
                     "combat": "/combat",
                 },
-                {
-                    "message": "Check your status",
-                    "status": "/status"
-                },
-                {
-                    "logout": "/logout"
-                }
-                
-                
+                {"message": "Check your status", "status": "/status"},
+                {"logout": "/logout"},
             ],
         }
     else:
@@ -89,7 +82,9 @@ async def login(
         response.set_cookie(key="access_token", value=player["token"], httponly=True)
         return response
     except Exception as e:
-        return {"message": f"Login failed: {str(e)}"}
+        return JSONResponse(
+            status_code=400, content={"message": f"Login failed: {str(e)}"}
+        )
 
 
 @router.get("/register")
@@ -141,6 +136,7 @@ async def game_info():
         "version": "0.3.0",
         "description": "A turn-based RPG game with FastAPI backend",
     }
+
 
 @router.get("/status")
 async def status(

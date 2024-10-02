@@ -96,10 +96,10 @@ class PlayerService:
         if not await self.player_queries.it_exists(name):
             raise Exception("Player not found, please register in /register")
 
-        player = await self.player_queries.get_player_by_name(name)
         try:
+            result = await self.player_queries.login(name)
             isValid = bcrypt.checkpw(
-                password.encode("utf-8"), player["player"]["password"].encode("utf-8")
+                password.encode("utf-8"), result["password"].encode("utf-8")
             )
             if not isValid:
                 raise Exception("Invalid password")
@@ -122,6 +122,9 @@ class PlayerService:
     async def get_all_players(self) -> dict:
         player_logger.info("Fetching all players")
         return await self.player_queries.get_all_players()
+
+    async def delete_all_players(self) -> dict:
+        return await self.player_queries.delete_all_players()
 
     async def get_player_by_name(self, player_name: str) -> dict:
         player_logger.info(f"Fetching player by name: {player_name}")

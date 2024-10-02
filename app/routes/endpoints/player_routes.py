@@ -59,5 +59,12 @@ async def get_all_players(
     return await service.get_all_players()
 
 
+@router.get("/delete/all")
+async def delete_all_players(
+    service: PlayerService = Depends(PlayerService.get_player_service),
+):
+    return await service.delete_all_players()
+
+
 def error_ocurred(name_error: str):
     return "An error ocurred in player " + name_error
