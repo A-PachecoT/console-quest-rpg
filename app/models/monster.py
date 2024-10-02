@@ -16,6 +16,10 @@ class Monster(Entity):
         self.defense = (random.random() * 1.5 + 0.5) * self.level
         self.xp_reward = self.level * 4
         monster_logger.info(f"Generated monster: {self.name} (Level {self.level})")
+        monster_logger.info(f"  HP: {self.current_hp}/{self.max_hp}")
+        monster_logger.info(f"  Attack: {self.attack}")
+        monster_logger.info(f"  Defense: {self.defense}")
+        monster_logger.info(f"  XP Reward: {self.xp_reward}")
 
     model_config = ConfigDict(
         json_schema_extra={

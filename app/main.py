@@ -6,7 +6,14 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from fastapi.staticfiles import StaticFiles
 from fastapi import Request
 import jwt
-from app.utils.logger import main_logger, api_logger, db_logger
+from app.utils.logger import (
+    main_logger,
+    api_logger,
+    db_logger,
+    player_logger,
+    monster_logger,
+    combat_logger,
+)
 from prometheus_client import Counter, Histogram
 import time
 from rich.console import Console
@@ -44,11 +51,14 @@ Console Quest RPG is a turn-based role-playing game developed as a software proj
 async def startup_event():
     console = Console()
     console.print(generate_markdown_banner())
+    main_logger.info("🚀 Starting Console Quest RPG")
+    main_logger.info("Initializing services...")
     main_logger.info("Starting up database client")
     MongoConnection.connect_to_mongo(settings.MONGO_URL, settings.MONGO_DB_NAME)
     db_logger.info(f"Connected to MongoDB at {settings.MONGO_URL}")
     main_logger.info("Database client started successfully")
-    main_logger.info("Application started")
+    main_logger.info("All services initialized")
+    main_logger.info("Console Quest RPG is ready to play!")
 
 
 @app.middleware("http")

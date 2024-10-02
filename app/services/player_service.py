@@ -6,6 +6,7 @@ import datetime
 from app.config import settings
 from app.database.mongo.connection import get_database
 from app.utils.logger import player_logger
+import colorlog
 
 JWT_SECRET_KEY = settings.JWT_SECRET_KEY
 SALT_ROUNDS = settings.SALT_ROUNDS
@@ -44,7 +45,9 @@ class PlayerService:
         Returns:
             str: El ID del jugador creado.
         """
+        player_logger.info(f"Attempting to register new player: {name}")
         if await self.player_queries.it_exists(name):
+            player_logger.warning(f"Registration failed: Player {name} already exists")
             raise Exception("Player already exists")
         standard_abilities = [
             {
@@ -76,6 +79,7 @@ class PlayerService:
                     algorithm="HS256",
                 )
                 response = {"message": "Registration successful", "token": token}
+                player_logger.info(f"Player {name} successfully registered")
                 return response
             else:
                 raise Exception("An error occurred while creating the player")
@@ -93,7 +97,9 @@ class PlayerService:
         Returns:
             dict: Un diccionario con el mensaje de inicio de sesión.
         """
+        player_logger.info(f"Login attempt for player: {name}")
         if not await self.player_queries.it_exists(name):
+            player_logger.warning(f"Login failed: Player {name} not found")
             raise Exception("Player not found, please register in /register")
 
         try:
@@ -115,6 +121,7 @@ class PlayerService:
                 JWT_SECRET_KEY,
                 algorithm="HS256",
             )
+            player_logger.info(f"Player {name} successfully logged in")
             return {"message": "Login successful", "token": token}
         except Exception as e:
             raise Exception("An error occurred while logging in")
@@ -139,12 +146,15 @@ class PlayerService:
         return await self.player_queries.delete_player(player_id)
 
     def add_experience(self, player: dict, amount: int) -> bool:
-        player_logger.info(f"Adding {amount} experience to player: {player['name']}")
+        player_logger.info(f"Adding {amount} XP to player: {player['name']}")
         player["xp"] += amount
         if player["xp"] >= player["target_xp"]:
             self._level_up(player)
-            player_logger.info(f"Player {player['name']} leveled up!")
+            player_logger.info(
+                f"🎉 Player {player['name']} leveled up to {player['level']}!"
+            )
             return True
+        player_logger.info(f"Player {player['name']} now has {player['xp']} XP")
         return False
 
     def _level_up(self, player: dict) -> dict:
@@ -157,6 +167,7 @@ class PlayerService:
         Returns:
             dict: El jugador con el nuevo nivel.
         """
+        old_level = player["level"]
         player["level"] += 1
         player["target_xp"] = player["level"] * 100
         player["xp"] = 0
@@ -167,6 +178,11 @@ class PlayerService:
         player["attack"] += 2
         player["defense"] += 1
 
+        player_logger.info(f"Player {player['name']} stats increased:")
+        player_logger.info(f"  HP: {old_level * 10} -> {player['max_hp']}")
+        player_logger.info(f"  Mana: {old_level * 5} -> {player['max_mana']}")
+        player_logger.info(f"  Attack: {old_level * 2} -> {player['attack']}")
+        player_logger.info(f"  Defense: {old_level} -> {player['defense']}")
         return player
 
     def die(self, player: dict) -> dict:
@@ -179,4 +195,8 @@ class PlayerService:
         player["current_hp"] = player["max_hp"]
         player["current_mana"] = player["max_mana"]
         player["current_enemy"] = None
+        player_logger.warning(f"Player {player['name']} has died!")
+        player_logger.info(
+            f"Player {player['name']} has been revived with full HP and Mana"
+        )
         return player
