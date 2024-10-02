@@ -28,8 +28,6 @@ class CombatService:
         return {"message": "An error occurred while starting the combat"}
 
     async def combat_status(self, player: dict, combat_actions: dict) -> dict:
-        if not player["current_enemy"]:
-            return {"message": "Player not in combat"}
 
         status = {
             f"{player['name']} health": player["current_hp"],
@@ -41,48 +39,46 @@ class CombatService:
         return {"status": status, "actions": combat_actions.get("take a turn", {})}
 
     async def attack(self, player: dict) -> dict:
-        if not player["current_enemy"]:
-            return {"message": "Player not in combat"}
-
         log = []
         log.append(self._take_turn(player, player["current_enemy"], 1))
-        enemy_action = random.randint(1, 2)
-        log.append(self._take_turn(player["current_enemy"], player, enemy_action))
 
         if(player["current_enemy"]["current_hp"] <= 0):
             levelFlag = self.player_service.add_experience(player, player["current_enemy"]["xp_reward"])
-            self.enemy_service.die(player)
 
             log.append(f"{player['name']} defeated {player['current_enemy']['name']}")
             log.append(f"{player['name']} gained {player['current_enemy']['xp_reward']} experience")
             if(levelFlag):
                 log.append(f"{player['name']} leveled up to level {player['level']}!")
             log.append("To start a combat, go to /combat/start")
-        elif(player["current_hp"] <= 0):
-            self.player_service.die(player)
 
+            self.enemy_service.die(player)
+            await self.player_service.update_player(player)
+            return {"log": log}
+
+        enemy_action = random.randint(1, 2)
+        log.append(self._take_turn(player["current_enemy"], player, enemy_action))
+
+        if(player["current_hp"] <= 0):
             log.append(f"{player['name']} was defeated by {player['current_enemy']['name']}")
             log.append("Game over")
             log.append("To start a combat, go to /combat/start")
 
+            self.player_service.die(player)
         await self.player_service.update_player(player)
         return {"log": log}
 
     async def defend(self, player: dict) -> dict:
-        if not player["current_enemy"]:
-            return {"message": "Player not in combat"}
-
         log = []
         log.append(self._take_turn(player, player["current_enemy"], 2))
         enemy_action = random.randint(1, 2)
         log.append(self._take_turn(player["current_enemy"], player, enemy_action))
 
         if(player["current_hp"] <= 0):
-            self.player_service.die(player)
-
             log.append(f"{player['name']} was defeated by {player['current_enemy']['name']}")
             log.append("Game over")
             log.append("To start a combat, go to /combat/start")
+
+            self.player_service.die(player)
 
         await self.player_service.update_player(player)
         return {"log": log}
@@ -96,16 +92,32 @@ class CombatService:
         }
 
     async def use_ability(self, player: dict, ability_id: int) -> dict:
-        if not player["current_enemy"]:
-            return {"message": "Player not in combat"}
-
         log = []
         ability = player["abilities"][ability_id]
         log.append(self._use_ability(player, player["current_enemy"], ability))
+
+        if(player["current_enemy"]["current_hp"] <= 0):
+            levelFlag = self.player_service.add_experience(player, player["current_enemy"]["xp_reward"])
+
+            log.append(f"{player['name']} defeated {player['current_enemy']['name']}")
+            log.append(f"{player['name']} gained {player['current_enemy']['xp_reward']} experience")
+            if(levelFlag):
+                log.append(f"{player['name']} leveled up to level {player['level']}!")
+            log.append("To start a combat, go to /combat/start")
+
+            self.enemy_service.die(player)
+            await self.player_service.update_player(player)
+            return {"log": log}
+
         enemy_action = random.randint(1, 2)
         log.append(self._take_turn(player["current_enemy"], player, enemy_action))
 
-        await self.player_service.update_player(player)
+        if(player["current_hp"] <= 0):
+            log.append(f"{player['name']} was defeated by {player['current_enemy']['name']}")
+            log.append("Game over")
+            log.append("To start a combat, go to /combat/start")
+
+            self.player_service.die(player)
         
         await self.player_service.update_player(player)
         return {"log": log}

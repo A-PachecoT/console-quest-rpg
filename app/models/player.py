@@ -5,8 +5,8 @@ from typing import Optional
 
 
 class Player(Entity):
-    exp: int = 0
-    target_exp: int = 10
+    xp: int = 0
+    target_xp: int = 10
     password: str
 
     current_enemy: Optional[Monster] = None
@@ -23,8 +23,8 @@ class Player(Entity):
                 "current_hp": 100,
                 "max_hp": 100,
                 "attack": 10,
-                "defense": 5,
-                "exp": 0,
-                "target_exp": 10,
+                "defense": 3.5,
+                "xp": 0,
+                "target_xp": 10,
             }
         }

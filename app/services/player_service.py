@@ -137,7 +137,7 @@ class PlayerService:
         """
         return await self.player_queries.delete_player(player_id)
 
-    def add_experience(self, amount: int, player: dict) -> bool:
+    def add_experience(self, player: dict, amount: int) -> bool:
         """
         Suma experiencia a un jugador.
 
@@ -148,8 +148,8 @@ class PlayerService:
         Returns:
             dict: El jugador con la nueva experiencia.
         """
-        player["exp"] += amount
-        if player["exp"] >= player["target_exp"]:
+        player["xp"] += amount
+        if player["xp"] >= player["target_xp"]:
             self._level_up(player)
             return True
         return False
@@ -165,8 +165,8 @@ class PlayerService:
             dict: El jugador con el nuevo nivel.
         """
         player["level"] += 1
-        player["target_exp"] = player["level"] * 100
-        player["exp"] = 0
+        player["target_xp"] = player["level"] * 100
+        player["xp"] = 0
         player["max_hp"] += 10
         player["current_hp"] = player["max_hp"]
         player["max_mana"] += 5

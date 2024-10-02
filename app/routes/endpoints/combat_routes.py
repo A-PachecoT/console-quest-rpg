@@ -77,11 +77,17 @@ async def attack(
 
     response = await player_service.get_player_by_name(user)
     player = response["player"]
+
     if not player:
         return {"message": "Player does not exist"}
+    
+    if not player["current_enemy"]:
+        return {"message": "Player not in combat"}
 
     attack_result = await combat_service.attack(player)
-    status = await combat_service.combat_status(player, COMBAT_ACTIONS)
+
+    if player["current_enemy"]:
+        status = await combat_service.combat_status(player, COMBAT_ACTIONS)
 
     return {**attack_result, **status}
 
@@ -101,9 +107,13 @@ async def defend(
 
     if not player:
         return {"message": "Player does not exist"}
+    
+    if not player["current_enemy"]:
+        return {"message": "Player not in combat"}
 
     defend_result = await combat_service.defend(player)
-    status = await combat_service.combat_status(player, COMBAT_ACTIONS)
+    if player["current_enemy"]:
+        status = await combat_service.combat_status(player, COMBAT_ACTIONS)
 
     return {**defend_result, **status}
 
@@ -139,10 +149,15 @@ async def use_ability(
 
     response = await player_service.get_player_by_name(user)
     player = response["player"]
+
     if not player:
         return {"message": "Player does not exist"}
     
+    if not player["current_enemy"]:
+        return {"message": "Player not in combat"}
+    
     use_ability_result = await combat_service.use_ability(player, ability_id)
-    status = await combat_service.combat_status(player, COMBAT_ACTIONS)
+    if player["current_enemy"]:
+        status = await combat_service.combat_status(player, COMBAT_ACTIONS)
 
     return {**use_ability_result, **status}
