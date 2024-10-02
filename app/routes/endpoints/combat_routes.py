@@ -75,6 +75,7 @@ async def attack(
     if not user:
         return RedirectResponse(url="/")
 
+    status = {}
     response = await player_service.get_player_by_name(user)
     player = response["player"]
 
@@ -111,6 +112,7 @@ async def defend(
     if not player["current_enemy"]:
         return {"message": "Player not in combat"}
 
+    status = {}
     defend_result = await combat_service.defend(player)
     if player["current_enemy"]:
         status = await combat_service.combat_status(player, COMBAT_ACTIONS)
@@ -156,6 +158,7 @@ async def use_ability(
     if not player["current_enemy"]:
         return {"message": "Player not in combat"}
     
+    status = {}
     use_ability_result = await combat_service.use_ability(player, ability_id)
     if player["current_enemy"]:
         status = await combat_service.combat_status(player, COMBAT_ACTIONS)
