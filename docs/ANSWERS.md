@@ -3,12 +3,24 @@
 En este archivo Markdown, nos moveremos al español.
 
 ### Gestión de combates mediante la API REST
-
-
+Para la gestion de los combates se usa el endpoint `/combat` del cual se desprenden 4 endpoints:
+- `/start` Que es usado para poder iniciar un combate, esta ruta asigna un enemigo al jugador, si el jugador ya tiene un enemigo asignado, el enemigo no es reasignado
+- `/attack` Que es usado para atacar al enemigo actual, si el jugador no tiene un enemigo actual, retorna que no se encuentra en combate
+- `/defend` Que es usado para defenserse (mitigar 30% del daño sin defenderse) del enemigo actual, si el jugador no tiene un enemigo actual, retorna que no se encuentra en combate
+- `/ability` Esta ruta redirecciona al menu de habilidades del jugador en el que el jugador decide que habilidad usar 
 
 ### Sistema de subida de nivel automático
 
+Cada que el jugador derrota un enemigo, consigue experiencia que se va acumulando hasta que llega al limite de la experiencia objetivo
+Al ocurrir esto, el jugador sube de nivel, con lo cual consigue los siguientes efectos:
+- Mejora la vida máxima
+- Mejora el mana máximo
+- Recupera toda la vida
+- Recupera todo el mana gastado
+- Mejora su ataque
+- Mejora su defensa
 
+Todo esto sucede de forma automatica.
 
 ### Dockerización del juego RPG
 
