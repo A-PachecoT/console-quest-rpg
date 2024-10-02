@@ -139,11 +139,17 @@ class PlayerService:
 
     async def update_player(self, player: Player) -> bool:
         player_logger.info(f"Updating player: {player.name}")
-        return await self.player_queries.update_player(player)
+        result = await self.player_queries.update_player(player)
+        if not result:
+            player_logger.warning(f"Failed to update player: {player.name}")
+        return result
 
     async def delete_player(self, player_id: str) -> bool:
         player_logger.info(f"Deleting player with ID: {player_id}")
-        return await self.player_queries.delete_player(player_id)
+        result = await self.player_queries.delete_player(player_id)
+        if not result:
+            player_logger.warning(f"Failed to delete player with ID: {player_id}")
+        return result
 
     def add_experience(self, player: dict, amount: int) -> bool:
         player_logger.info(f"Adding {amount} XP to player: {player['name']}")
@@ -158,15 +164,6 @@ class PlayerService:
         return False
 
     def _level_up(self, player: dict) -> dict:
-        """
-        Sube de nivel a un jugador.
-
-        Args:
-            player (dict): El jugador a subir de nivel.
-
-        Returns:
-            dict: El jugador con el nuevo nivel.
-        """
         old_level = player["level"]
         player["level"] += 1
         player["target_xp"] = player["level"] * 100
@@ -192,10 +189,12 @@ class PlayerService:
         Args:
             player (dict): El jugador a matar.
         """
+        player_logger.warning(f"Player {player['name']} has died!")
         player["current_hp"] = player["max_hp"]
         player["current_mana"] = player["max_mana"]
-        player["current_enemy"] = None
-        player_logger.warning(f"Player {player['name']} has died!")
+        if player["current_enemy"] is not None:
+            player_logger.info(f"Resetting current enemy for player {player['name']}")
+            player["current_enemy"] = None
         player_logger.info(
             f"Player {player['name']} has been revived with full HP and Mana"
         )

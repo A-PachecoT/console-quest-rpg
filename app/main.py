@@ -13,6 +13,7 @@ from app.utils.logger import (
     player_logger,
     monster_logger,
     combat_logger,
+    metrics_logger,
 )
 from prometheus_client import Counter, Histogram
 import time
@@ -37,11 +38,13 @@ def generate_markdown_banner():
         """
 # 🎮 Console Quest RPG ⚔️
 ### Made with ❤️ in Perú
-### By Pacheco André, Pezo Sergio, Torres Oscar 2️⃣0️⃣2️⃣4️⃣
+### By Pacheco André, Pezo Sergio, Torres Oscar 2️⃣ 0️⃣ 2️⃣ 4️⃣
 - **Powered by**: FastAPI
 - **Status**: Initializing...
 ---
 Console Quest RPG is a turn-based role-playing game developed as a software project for the CC3S2 course at the National University of Engineering. The game uses FastAPI for the backend and is designed to be played through API calls.
+---
+
 """
     )
     return markdown
@@ -82,7 +85,7 @@ async def metrics_middleware(request: Request, call_next):
     LATENCY.labels(method=request.method, endpoint=request.url.path).observe(
         process_time
     )
-    api_logger.info(
+    metrics_logger.info(
         f'"{request.method} {request.url.path} HTTP/1.1" {response.status_code} - {process_time:.4f}s'
     )
     return response

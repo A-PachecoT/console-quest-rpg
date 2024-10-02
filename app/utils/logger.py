@@ -10,19 +10,29 @@ class CustomFilter(logging.Filter):
         return True
 
 
+class MetricsFormatter(colorlog.ColoredFormatter):
+    def format(self, record):
+        if record.name == "metrics":
+            # Use white color for metrics logs
+            self.log_colors = {"INFO": "white"}
+        else:
+            # Use default colors for other logs
+            self.log_colors = {
+                "DEBUG": "cyan",
+                "INFO": "green",
+                "WARNING": "yellow",
+                "ERROR": "red",
+                "CRITICAL": "red,bg_white",
+            }
+        return super().format(record)
+
+
 def setup_logger(name, log_file, level=logging.INFO):
     # Create logs directory if it doesn't exist
     os.makedirs(os.path.dirname(log_file), exist_ok=True)
 
-    formatter = colorlog.ColoredFormatter(
+    formatter = MetricsFormatter(
         "%(log_color)s%(asctime)s | %(filename)s | %(levelname)s: %(message)s",
-        log_colors={
-            "DEBUG": "cyan",
-            "INFO": "green",
-            "WARNING": "yellow",
-            "ERROR": "red",
-            "CRITICAL": "red,bg_white",
-        },
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
@@ -61,6 +71,7 @@ db_logger = setup_logger("database", "/app/logs/database.log")
 player_logger = setup_logger("player", "/app/logs/player.log")
 monster_logger = setup_logger("monster", "/app/logs/monster.log")
 combat_logger = setup_logger("combat", "/app/logs/combat.log")
+metrics_logger = setup_logger("metrics", "/app/logs/metrics.log")
 
 # Disable uvicorn access log
 logging.getLogger("uvicorn.access").disabled = True

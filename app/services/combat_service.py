@@ -27,6 +27,10 @@ class CombatService:
         return {"message": f"Combat started for {player['name']}", "enemy": enemy_dict}
 
     async def combat_status(self, player: dict, combat_actions: dict) -> dict:
+        if player["current_enemy"] is None:
+            combat_logger.warning(f"Player {player['name']} is not in combat")
+            return {"message": "Player is not in combat"}
+
         status = {
             f"{player['name']} health": player["current_hp"],
             f"{player['name']} mana": player["current_mana"],
@@ -41,6 +45,12 @@ class CombatService:
         return {"status": status, "actions": combat_actions.get("take a turn", {})}
 
     async def attack(self, player: dict) -> dict:
+        if player["current_enemy"] is None:
+            combat_logger.warning(
+                f"Player {player['name']} attempted to attack while not in combat"
+            )
+            return {"message": "You are not in combat"}
+
         log = []
         combat_logger.info(
             f"{player['name']} attacks {player['current_enemy']['name']}"
@@ -86,6 +96,12 @@ class CombatService:
         return {"log": log}
 
     async def defend(self, player: dict) -> dict:
+        if player["current_enemy"] is None:
+            combat_logger.warning(
+                f"Player {player['name']} attempted to defend while not in combat"
+            )
+            return {"message": "You are not in combat"}
+
         log = []
         log.append(self._take_turn(player, player["current_enemy"], 2))
         enemy_action = random.randint(1, 2)
@@ -112,6 +128,18 @@ class CombatService:
         }
 
     async def use_ability(self, player: dict, ability_id: int) -> dict:
+        if player["current_enemy"] is None:
+            combat_logger.warning(
+                f"Player {player['name']} attempted to use ability while not in combat"
+            )
+            return {"message": "You are not in combat"}
+
+        if ability_id >= len(player["abilities"]):
+            combat_logger.warning(
+                f"Player {player['name']} attempted to use non-existent ability (ID: {ability_id})"
+            )
+            return {"message": "Invalid ability ID"}
+
         log = []
         ability = player["abilities"][ability_id]
         log.append(self._use_ability(player, player["current_enemy"], ability))
