@@ -74,6 +74,11 @@ async def login(
     username = login["username"]
     password = login["password"]
 
+    if not username or not password:
+        return JSONResponse(
+            status_code=400, content={"message": "Username and password are required"}
+        )
+
     try:
         player = await player_service.login(username, password)
         print(player)
@@ -104,6 +109,11 @@ async def register(
     login = login.dict()
     username = login["username"]
     password = login["password"]
+
+    if not username or not password:
+        return JSONResponse(
+            status_code=400, content={"message": "Username and password are required"}
+        )
 
     try:
         player = await player_service.register(username, password)
