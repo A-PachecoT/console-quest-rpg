@@ -17,7 +17,8 @@ For detailed information, please refer to the following documentation:
 - [Git Workflow Guide](./docs/GIT_WORKFLOW_GUIDE.md): Guidelines for contributing to the project using Git.
 - [Changelog](./CHANGELOG.md): A detailed list of changes for each version of the project.
 
-- [Answers](./docs/ANSWERS.md): The first test's answers.
+- [Answers](./docs/ANSWERS.md): The first test's answers for Qualified Practice 1.
+- [Answers PC2](./docs/ANSWERSPC2.md): The first test's answers for Qualified Practice 2.
 
 ## Project Structure
 ```
