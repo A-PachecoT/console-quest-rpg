@@ -21,26 +21,60 @@ For detailed information, please refer to the following documentation:
 
 ## Project Structure
 ```
-console-quest-rpg/
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-├── backend/
-│   ├── app/
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── tests/
+├── app
+│   ├── config.py
+│   ├── database
+│   │   ├── __init__.py
+│   │   └── mongo
+│   │       ├── connection.py
+│   │       ├── _init_.py
+│   │       └── queries
+│   │           ├── __init__.py
+│   │           └── player.py
+│   ├── __init__.py
+│   ├── main.py
+│   ├── metrics.py
+│   ├── models
+│   │   ├── ability.py
+│   │   ├── entity.py
+│   │   ├── __init__.py
+│   │   ├── monster.py
+│   │   └── player.py
+│   ├── routes
+│   │   ├── endpoints
+│   │   │   ├── combat_routes.py
+│   │   │   ├── general_routes.py
+│   │   │   └── player_routes.py
+│   │   └── __init__.py
+│   ├── services
+│   │   ├── combat_service.py
+│   │   ├── enemy_service.py
+│   │   ├── __init__.py
+│   │   └── player_service.py
+│   └── views
+│       ├── login.html
+│       └── register.html
+├── CHANGELOG.md
 ├── compose.yml
-├── frontend/
-│   ├── app/
-│   ├── Dockerfile
-│   └── main.py
+├── Dockerfile
+├── docs
+│   ├── ANSWERS.md
+│   ├── API_DOCUMENTATION.md
+│   ├── DEVELOPER_GUIDE.md
+│   └── GIT_WORKFLOW_GUIDE.md
 ├── grafana
 │   └── main-dashboard.json
-├── prometheus_data/
-│   └── prometheus.yml
-├── CHANGELOG.md
-└── README.md
+├── grafana_data
+│   └── grafana.db
+├── prometheus_data
+│   └── prometheus.yml
+├── pyproject.toml
+├── README.md
+├── requirements.txt
+├── run.sh
+└── tests
+    ├── conftest.py
+    └── test_main.py
 ```
 
 ## Versions
