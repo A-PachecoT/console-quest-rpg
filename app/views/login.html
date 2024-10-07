@@ -9,22 +9,43 @@
         h2 { color: #333; text-align: center; }
         input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
         button { width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
         button:hover { background-color: #45a049; }
         .register-link { display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; }
         .register-link:hover { text-decoration: underline; }
+        .error-message { color: red; font-size: 14px; margin-top: 5px; }
     </style>
 </head>
 <body>
     <h2>Login</h2>
     <input type="text" id="username" placeholder="Username" required>
     <input type="password" id="password" placeholder="Password" required>
-    <button onclick="login()">Login</button>
+    <p id="errorMessage" class="error-message"></p>
+    <button id="actionButton" onclick="login()" disabled>Login</button>
     <a href="/register" class="register-link">Don't have an account? Register here</a>
 
     <script>
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const actionButton = document.getElementById('actionButton');
+        const errorMessage = document.getElementById('errorMessage');
+
+        usernameInput.addEventListener('input', validateInputs);
+        passwordInput.addEventListener('input', validateInputs);
+
+        function validateInputs() {
+            if (usernameInput.value.trim() !== '' && passwordInput.value.trim() !== '') {
+                actionButton.disabled = false;
+                errorMessage.textContent = '';
+            } else {
+                actionButton.disabled = true;
+                errorMessage.textContent = 'Please enter valid username and password.';
+            }
+        }
+
         async function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+            const username = usernameInput.value;
+            const password = passwordInput.value;
 
             try {
                 const response = await fetch('/login', {
