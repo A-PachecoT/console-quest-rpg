@@ -4,6 +4,7 @@ Nuevamente volvemos al español.
 
 #### Repositorio GitHub actualizado
 
+Para esta PC, hemos decidido trabajar, con Git Flow, para el manejo de las ramas, creando nuestra rama [develop](https://github.com/A-PachecoT/console-quest-rpg/tree/develop).
 
 
 #### Tablero Kanban completo
