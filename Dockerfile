@@ -1,7 +1,7 @@
 FROM python:3.12-slim
 
 # Establecer el directorio de trabajo en /app
-WORKDIR /app
+WORKDIR /src/app
 
 # Copiar los archivos de requerimientos
 COPY requirements.txt .
