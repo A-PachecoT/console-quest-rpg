@@ -9,7 +9,11 @@ def pytest_configure(config):
     pytest.asyncio_mode = "auto"
 
 
-@pytest.fixture
+def pytest_configure(config):
+    pytest.asyncio_mode = "auto"
+
+
+@pytest.fixture(scope="module")
 def mock_db():
     mock_db = AsyncMock(spec=AsyncIOMotorDatabase)
     mock_collection = AsyncMock()
@@ -17,11 +21,11 @@ def mock_db():
     return mock_db
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def player_queries(mock_db):
     return PlayerQueries(mock_db)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def player_service(player_queries):
     return PlayerService(player_queries)
