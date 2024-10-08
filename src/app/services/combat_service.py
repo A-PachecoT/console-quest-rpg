@@ -174,6 +174,7 @@ class CombatService:
         return {"log": log, "go_to": "/combat", "go_home": "/"}
 
     def _take_turn(self, entity: Entity, target: Entity, action: int):
+        print("turn")
         if action == 1:
             return self._attack(entity, target)
         if action == 2:
