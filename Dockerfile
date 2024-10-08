@@ -17,6 +17,9 @@ COPY src/ .
 ENV MONGO_URL=mongodb://mongodb:27017
 ENV MONGO_DB_NAME=testdb
 
+#behave tests
+RUN behave
+
 # Ejecutar pytest
 RUN python -m pytest tests/
 

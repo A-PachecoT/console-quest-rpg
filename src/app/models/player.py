@@ -7,7 +7,7 @@ from typing import Optional
 class Player(Entity):
     xp: int = 0
     target_xp: int = 10
-    password: str
+    password: Optional[str] = None
 
     current_enemy: Optional[Monster] = None
 
