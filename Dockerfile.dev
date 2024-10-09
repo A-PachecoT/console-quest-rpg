@@ -6,7 +6,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Install development dependencies
-RUN pip install pytest behave
+RUN pip install pytest behave pytest-asyncio
 
 # Copy the source code
 COPY src/ .
