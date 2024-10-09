@@ -6,7 +6,7 @@ Console Quest RPG is a turn-based role-playing game developed as a software proj
 ### Team Members
 - Pacheco André - 20222189G
 - Pezo Sergio - 20224087G
-- Torres Oscar - 
+- Torres Oscar - 20210153B
 
 ## Documentation
 
