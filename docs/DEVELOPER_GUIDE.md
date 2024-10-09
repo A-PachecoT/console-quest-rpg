@@ -19,6 +19,20 @@ cd console-quest-rpg
 docker compose up --build -d
 ```
 
+### Useful Docker Commands
+
+Here are some useful Docker commands for development:
+
+1. Rebuild and start the backend container, then view its logs:
+```
+docker compose up -d --build backend && docker compose logs -f backend
+```
+
+2. Run tests in a new container using the development compose file:
+```
+docker compose -f compose.dev.yml run --rm backend /usr/local/bin/run_tests
+```
+
 ### Using Black Formatter
 
 We use Black Formatter to maintain consistent code formatting. To set it up:
