@@ -8,7 +8,7 @@ from fastapi import Request
 import jwt
 from rich.console import Console
 from rich.markdown import Markdown
-import logging
+from app.logger import main_logger, db_logger  # Import the loggers
 
 # Creamos una instancia de la aplicación FastAPI
 app = FastAPI(
@@ -16,10 +16,6 @@ app = FastAPI(
     description="This is the API for the Console Quest project",
     version="1.0.0",
 )
-
-# Set up logging
-main_logger = logging.getLogger("main")
-db_logger = logging.getLogger("database")
 
 
 def generate_markdown_banner():
