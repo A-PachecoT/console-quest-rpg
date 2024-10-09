@@ -37,4 +37,16 @@ jobs:
       - uses: rickstaa/action-black@v1
         with:
           black_args: ". --check"
-
+  
+  security-check:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run safety check
+        run: |
+          pip install safety
+          safety check
