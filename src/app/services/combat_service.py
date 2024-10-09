@@ -198,7 +198,7 @@ class CombatService:
             return {
                 "success": False,
                 "message": f"{entity['name']} does not have enough mana to use {ability['name']}",
-                "damage": 0
+                "damage": 0,
             }
         entity["current_mana"] -= ability["mana_cost"]
 
@@ -212,5 +212,5 @@ class CombatService:
         return {
             "success": True,
             "message": f"{entity['name']} used {ability['name']} on {target['name']} for {damage} damage",
-            "damage": damage
+            "damage": damage,
         }
