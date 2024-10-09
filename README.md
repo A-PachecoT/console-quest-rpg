@@ -101,6 +101,10 @@ For detailed information, please refer to the following documentation:
 
 ## Quick Start
 
+> [!TIP]
+> For a better experience use thi chrome extension [JSON Formatter](https://chromewebstore.google.com/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa?hl=en)
+
+
 1. Clone the repository:
 ```
 git clone https://github.com/A-PachecoT/console-quest-rpg.git
