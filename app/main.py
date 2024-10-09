@@ -11,12 +11,20 @@ from app.metrics import (
     player_level_metric,
     combat_outcomes_metric,
 )
+from app.utils.logger import main_logger, api_logger
+from prometheus_client import Counter, Histogram
+import time
 
 # Creamos una instancia de la aplicación FastAPI
 app = FastAPI(
     title="Console Quest API",
     description="This is the API for the Console Quest project",
     version="1.0.0",
+)
+
+REQUESTS = Counter("http_requests_total", "Total HTTP Requests", ["method", "endpoint"])
+LATENCY = Histogram(
+    "http_request_duration_seconds", "HTTP request latency", ["method", "endpoint"]
 )
 
 
@@ -32,18 +40,37 @@ async def token_middleware(request: Request, call_next):
     return await call_next(request)
 
 
+@app.middleware("http")
+async def metrics_middleware(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    REQUESTS.labels(method=request.method, endpoint=request.url.path).inc()
+    LATENCY.labels(method=request.method, endpoint=request.url.path).observe(
+        process_time
+    )
+    api_logger.info(
+        f"Request: {request.method} {request.url.path} - Process time: {process_time:.2f}s"
+    )
+    return response
+
+
 # Mount the static files directory
 app.mount("/static", StaticFiles(directory="app/views"), name="static")
 
 
 @app.on_event("startup")
 async def startup_db_client():
+    main_logger.info("Starting up database client")
     MongoConnection.connect_to_mongo(settings.MONGO_URL, settings.MONGO_DB_NAME)
+    main_logger.info("Database client started successfully")
 
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
+    main_logger.info("Shutting down database client")
     MongoConnection.close_mongo_connection()
+    main_logger.info("Database client shut down successfully")
 
 
 # Incluimos el router de la aplicación con el prefijo "/api"
@@ -65,3 +92,4 @@ instrumentator.add(combat_outcomes_metric())
 
 # Initialize the instrumentator
 instrumentator.expose(app)
+main_logger.info("Application started")
