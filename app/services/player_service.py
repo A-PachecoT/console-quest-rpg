@@ -198,6 +198,7 @@ class PlayerService:
         if player["current_enemy"] is not None:
             player_logger.info(f"Resetting current enemy for player {player['name']}")
             player["current_enemy"] = None
+        player_logger.warning(f"Player {player['name']} has died!")
         player_logger.info(
             f"Player {player['name']} has been revived with full HP and Mana"
         )
