@@ -22,60 +22,77 @@ For detailed information, please refer to the following documentation:
 
 ## Project Structure
 ```
-├── app
-│   ├── config.py
-│   ├── database
-│   │   ├── __init__.py
-│   │   └── mongo
-│   │       ├── connection.py
-│   │       ├── _init_.py
-│   │       └── queries
-│   │           ├── __init__.py
-│   │           └── player.py
-│   ├── __init__.py
-│   ├── main.py
-│   ├── metrics.py
-│   ├── models
-│   │   ├── ability.py
-│   │   ├── entity.py
-│   │   ├── __init__.py
-│   │   ├── monster.py
-│   │   └── player.py
-│   ├── routes
-│   │   ├── endpoints
-│   │   │   ├── combat_routes.py
-│   │   │   ├── general_routes.py
-│   │   │   └── player_routes.py
-│   │   └── __init__.py
-│   ├── services
-│   │   ├── combat_service.py
-│   │   ├── enemy_service.py
-│   │   ├── __init__.py
-│   │   └── player_service.py
-│   └── views
-│       ├── login.html
-│       └── register.html
 ├── CHANGELOG.md
+├── compose.dev.yml
 ├── compose.yml
 ├── Dockerfile
+├── Dockerfile.dev
 ├── docs
-│   ├── ANSWERS.md
-│   ├── API_DOCUMENTATION.md
-│   ├── DEVELOPER_GUIDE.md
-│   └── GIT_WORKFLOW_GUIDE.md
+│   ├── ANSWERS.md
+│   ├── ANSWERSPC2.md
+│   ├── API_DOCUMENTATION.md
+│   ├── DEVELOPER_GUIDE.md
+│   └── GIT_WORKFLOW_GUIDE.md
 ├── grafana
-│   └── main-dashboard.json
+│   ├── alerts
+│   │   ├── alert-2.5-sec.json
+│   │   ├── alert-505.json
+│   │   └── alert-login-register.json
+│   ├── dashboards
+│   │   ├── combat-user-dashboard.json
+│   │   └── server-stats-dashboard.json
+│   └── grafana.ini
 ├── grafana_data
-│   └── grafana.db
+│   └── grafana.db
 ├── prometheus_data
-│   └── prometheus.yml
+│   └── prometheus.yml
 ├── pyproject.toml
 ├── README.md
 ├── requirements.txt
-├── run.sh
-└── tests
-    ├── conftest.py
-    └── test_main.py
+├── run_tests.sh
+└── src
+    ├── app
+    │   ├── config.py
+    │   ├── database
+    │   │   ├── __init__.py
+    │   │   └── mongo
+    │   │       ├── connection.py
+    │   │       ├── __init__.py
+    │   │       └── queries
+    │   │           ├── __init__.py
+    │   │           └── player.py
+    │   ├── __init__.py
+    │   ├── logger.py
+    │   ├── main.py
+    │   ├── metrics.py
+    │   ├── models
+    │   │   ├── ability.py
+    │   │   ├── entity.py
+    │   │   ├── __init__.py
+    │   │   ├── monster.py
+    │   │   └── player.py
+    │   ├── routes
+    │   │   ├── endpoints
+    │   │   │   ├── combat_routes.py
+    │   │   │   ├── general_routes.py
+    │   │   │   └── player_routes.py
+    │   │   └── __init__.py
+    │   ├── services
+    │   │   ├── combat_service.py
+    │   │   ├── enemy_service.py
+    │   │   ├── __init__.py
+    │   │   └── player_service.py
+    │   └── views
+    │       ├── login.html
+    │       └── register.html
+    ├── features
+    │   ├── combat.feature
+    │   └── steps
+    │       └── combat_steps.py
+    └── tests
+        ├── conftest.py
+        ├── __init__.py
+        └── test_player_queries.py
 ```
 
 ## Versions
