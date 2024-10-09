@@ -127,12 +127,10 @@ class CombatService:
         log = []
         ability = player["abilities"][ability_id]
         ability_result = self._use_ability(player, player["current_enemy"], ability)
-        log.append(ability_result)
+        log.append(ability_result["message"])
 
         # Update player damage metric
-        damage_dealt = float(
-            ability_result.split()[-2]
-        )  # Extract damage value from log message
+        damage_dealt = ability_result["damage"]
         PLAYER_DAMAGE.labels(player_name=player["name"]).inc(damage_dealt)
 
         if player["current_enemy"]["current_hp"] <= 0:
@@ -196,9 +194,11 @@ class CombatService:
 
     def _use_ability(self, entity, target, ability):
         if entity["current_mana"] < ability["mana_cost"]:
-            return (
-                f"{entity['name']} does not have enough mana to use {ability['name']}"
-            )
+            return {
+                "success": False,
+                "message": f"{entity['name']} does not have enough mana to use {ability['name']}",
+                "damage": 0
+            }
         entity["current_mana"] -= ability["mana_cost"]
 
         damage_mitigation = (target["defense"]) / (target["defense"] + 5)
@@ -208,4 +208,8 @@ class CombatService:
         target["current_hp"] -= damage
         target["is_defending"] = False
 
-        return f"{entity['name']} used {ability['name']} on {target['name']} for {damage} damage"
+        return {
+            "success": True,
+            "message": f"{entity['name']} used {ability['name']} on {target['name']} for {damage} damage",
+            "damage": damage
+        }
