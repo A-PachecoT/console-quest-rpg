@@ -8,6 +8,7 @@ from app.services.player_service import PlayerService
 def pytest_configure(config):
     pytest.asyncio_mode = "auto"
 
+
 @pytest.fixture
 def mock_db():
     mock_db = AsyncMock(spec=AsyncIOMotorDatabase)
