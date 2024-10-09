@@ -1,0 +1,18 @@
+FROM python:3.12-slim
+
+WORKDIR /src
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install development dependencies
+RUN pip install pytest behave pytest-asyncio
+
+# Copy the source code
+COPY src/ .
+
+# Create a script to run tests
+COPY run_tests.sh /usr/local/bin/run_tests
+RUN chmod +x /usr/local/bin/run_tests
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

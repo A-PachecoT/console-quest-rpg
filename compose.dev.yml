@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./src:/src
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MONGO_URL=mongodb://root:password@mongodb:27017/db_test?authSource=admin
+      - MONGO_DB_NAME=db_test
+
+  mongodb:
+    image: mongo:5.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: db_test
+
+volumes:
+  mongo-data:

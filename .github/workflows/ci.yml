@@ -23,7 +23,11 @@ jobs:
     
     - name: Build and run containers
       run: |
-        docker compose -f compose.yml up -d --build
+        docker compose -f compose.yml -f compose.dev.yml up -d --build
+
+    - name: Run tests
+      run: |
+        docker compose -f compose.yml -f compose.dev.yml run --rm backend run_tests
 
   black-formatter:
     name: Black Code Formatter
