@@ -1,0 +1,145 @@
+{
+    "apiVersion": 1,
+    "groups": [
+        {
+            "orgId": 1,
+            "name": "SeverErrors",
+            "folder": "INTERNAL SERVER ERROR",
+            "interval": "5m",
+            "rules": [
+                {
+                    "uid": "be0an4wggh4aob",
+                    "title": "SEVER INTERNAL ERROR ",
+                    "condition": "C",
+                    "data": [
+                        {
+                            "refId": "A",
+                            "relativeTimeRange": {
+                                "from": 21600,
+                                "to": 0
+                            },
+                            "datasourceUid": "ee07h443gblz4f",
+                            "model": {
+                                "datasource": {
+                                    "type": "prometheus",
+                                    "uid": "ee07h443gblz4f"
+                                },
+                                "editorMode": "code",
+                                "expr": "sum(http_all_requests_total{status=\"5xx\"}) by (handler)",
+                                "instant": false,
+                                "interval": "",
+                                "intervalMs": 15000,
+                                "legendFormat": "__auto",
+                                "maxDataPoints": 43200,
+                                "range": true,
+                                "refId": "A"
+                            }
+                        },
+                        {
+                            "refId": "B",
+                            "relativeTimeRange": {
+                                "from": 0,
+                                "to": 0
+                            },
+                            "datasourceUid": "__expr__",
+                            "model": {
+                                "conditions": [
+                                    {
+                                        "evaluator": {
+                                            "params": [],
+                                            "type": "gt"
+                                        },
+                                        "operator": {
+                                            "type": "and"
+                                        },
+                                        "query": {
+                                            "params": [
+                                                "B"
+                                            ]
+                                        },
+                                        "reducer": {
+                                            "params": [],
+                                            "type": "last"
+                                        },
+                                        "type": "query"
+                                    }
+                                ],
+                                "datasource": {
+                                    "type": "__expr__",
+                                    "uid": "__expr__"
+                                },
+                                "expression": "A",
+                                "intervalMs": 1000,
+                                "maxDataPoints": 43200,
+                                "reducer": "last",
+                                "refId": "B",
+                                "type": "reduce"
+                            }
+                        },
+                        {
+                            "refId": "C",
+                            "relativeTimeRange": {
+                                "from": 0,
+                                "to": 0
+                            },
+                            "datasourceUid": "__expr__",
+                            "model": {
+                                "conditions": [
+                                    {
+                                        "evaluator": {
+                                            "params": [
+                                                0
+                                            ],
+                                            "type": "gt"
+                                        },
+                                        "operator": {
+                                            "type": "and"
+                                        },
+                                        "query": {
+                                            "params": [
+                                                "C"
+                                            ]
+                                        },
+                                        "reducer": {
+                                            "params": [],
+                                            "type": "last"
+                                        },
+                                        "type": "query"
+                                    }
+                                ],
+                                "datasource": {
+                                    "type": "__expr__",
+                                    "uid": "__expr__"
+                                },
+                                "expression": "B",
+                                "intervalMs": 1000,
+                                "maxDataPoints": 43200,
+                                "refId": "C",
+                                "type": "threshold"
+                            }
+                        }
+                    ],
+                    "dashboardUid": "ce0afujiosmbkd",
+                    "panelId": 3,
+                    "noDataState": "NoData",
+                    "execErrState": "Error",
+                    "for": "5m",
+                    "annotations": {
+                        "__dashboardUid__": "ce0afujiosmbkd",
+                        "__panelId__": "3",
+                        "description": "INTERNAL SERVER ERRORRRRRR",
+                        "runbook_url": "",
+                        "summary": ""
+                    },
+                    "labels": {
+                        "": ""
+                    },
+                    "isPaused": false,
+                    "notification_settings": {
+                        "receiver": "Sergio"
+                    }
+                }
+            ]
+        }
+    ]
+}
