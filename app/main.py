@@ -44,11 +44,7 @@ def generate_markdown_banner():
         """
 # 🎮 Console Quest RPG ⚔️
 ### Made with ❤️ in Perú
-<<<<<<< HEAD
 ### By Pacheco André, Pezo Sergio, Torres Oscar 2️⃣ 0️⃣ 2️⃣ 4️⃣
-=======
-### By Pacheco André, Pezo Sergio, Torres Oscar 2️⃣0️⃣2️⃣4️⃣
->>>>>>> e94a0d6 (feat(startup): add emojis to markdown banner)
 - **Powered by**: FastAPI
 - **Status**: Initializing...
 ---
