@@ -6,6 +6,9 @@ from prometheus_fastapi_instrumentator import Instrumentator, metrics
 from fastapi.staticfiles import StaticFiles
 from fastapi import Request
 import jwt
+from rich.console import Console
+from rich.markdown import Markdown
+import logging
 
 # Creamos una instancia de la aplicación FastAPI
 app = FastAPI(
@@ -13,6 +16,27 @@ app = FastAPI(
     description="This is the API for the Console Quest project",
     version="1.0.0",
 )
+
+# Set up logging
+main_logger = logging.getLogger("main")
+db_logger = logging.getLogger("database")
+
+
+def generate_markdown_banner():
+    markdown = Markdown(
+        """
+# 🎮 Console Quest RPG ⚔️
+### Made with ❤️ in Perú
+### By Pacheco André, Pezo Sergio, Torres Oscar 2️⃣ 0️⃣ 2️⃣ 4️⃣
+- **Powered by**: FastAPI
+- **Status**: Initializing...
+---
+Console Quest RPG is a turn-based role-playing game developed as a software project for the CC3S2 course at the National University of Engineering. The game uses FastAPI for the backend and is designed to be played through API calls.
+---
+
+"""
+    )
+    return markdown
 
 
 @app.middleware("http")
@@ -47,12 +71,21 @@ instrumentator.add(
     )
 )
 
-# Initialize the instrumentator
-
 
 @app.on_event("startup")
-async def startup_db_client():
+async def startup_event():
+    console = Console()
+    console.print(generate_markdown_banner())
+    main_logger.info("🚀 Starting Console Quest RPG")
+    main_logger.info("Initializing services...")
+    main_logger.info("Starting up database client")
     MongoConnection.connect_to_mongo(settings.MONGO_URL, settings.MONGO_DB_NAME)
+    db_logger.info(f"Connected to MongoDB at {settings.MONGO_URL}")
+    main_logger.info("Database client started successfully")
+    main_logger.info("All services initialized")
+    main_logger.info("Console Quest RPG is ready to play!")
+
+    # Initialize the instrumentator
     instrumentator.expose(app)
 
 
